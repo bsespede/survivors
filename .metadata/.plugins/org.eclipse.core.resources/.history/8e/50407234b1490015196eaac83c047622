@@ -1,0 +1,60 @@
+package com.baru.survivor.backend;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.baru.survivor.backend.agents.Agent;
+import com.baru.survivor.backend.agents.AgentManager;
+import com.baru.survivor.backend.map.TerrainGenerator;
+import com.baru.survivor.backend.map.Terrain;
+import com.baru.survivor.backend.resources.ResourceManager;
+
+public class Status {
+
+	private Terrain terrainManager = new Terrain();
+	private List<Agent> agents = new ArrayList<Agent>();
+	private List<Resource> resources = new ArrayList<Resource>();
+
+	public void generateMap() {
+		terrainManager = (new TerrainGenerator()).generateMap();
+	}
+
+	public void addResources() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void addAgents(int agentsNum) {
+		while (agentsNum > 0){
+			Agent newAgent = agentManager.createAgent();
+			if (terrainManager.canSpawn(newAgent.x(), newAgent.y())){
+				agentManager.add(newAgent);
+				agentsNum--;
+			}
+		}		
+	}
+
+	public Terrain getTerrain() {
+		return terrainManager;
+	}
+	
+	public AgentManager getAgents() {
+		return agentManager;
+	}
+
+	public ResourceManager getResources() {
+		return resourceManager;
+	}
+	
+	public void nextState(){
+		
+	}
+
+	public void create() {
+		// Start simulation
+		generateMap();
+		addResources();
+		addAgents(5);
+	}
+
+}

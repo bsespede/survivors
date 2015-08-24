@@ -1,0 +1,51 @@
+package com.baru.survivor.backend;
+
+import com.baru.survivor.backend.agents.AgentManager;
+import com.baru.survivor.backend.map.TerrainGenerator;
+import com.baru.survivor.backend.map.TerrainManager;
+import com.baru.survivor.backend.resources.ResourceManager;
+
+public class Status {
+
+	private TerrainManager terrainManager = new TerrainManager();
+	private AgentManager agentManager = new AgentManager();
+	private ResourceManager resourceManager = new ResourceManager();
+
+	public void generateMap() {
+		terrainManager = (new TerrainGenerator()).generateMap();
+	}
+
+	public void addResources() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void addAgents() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public TerrainManager getTerrain() {
+		return terrainManager;
+	}
+	
+	public AgentManager getAgents() {
+		return agentManager;
+	}
+
+	public ResourceManager getResources() {
+		return resourceManager;
+	}
+	
+	public void nextState(){
+		
+	}
+
+	public void create() {
+		// Start simulation
+		generateMap();
+		addResources();
+		addAgents(5);
+	}
+
+}

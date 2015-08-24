@@ -1,0 +1,19 @@
+package com.baru.survivor.backend.agents;
+
+import java.util.Random;
+
+import com.baru.survivor.frontend.Survivors;
+
+public class Agent {
+	
+	private int x;
+	private int y;
+	
+	public Agent(){
+		Random rand = new Random();
+		boolean canSpawn;
+		x = (int) (rand.nextFloat() * Survivors.width);
+		y = (int) (rand.nextFloat() * Survivors.height);
+		if ()
+	}
+}

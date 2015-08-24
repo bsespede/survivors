@@ -1,0 +1,39 @@
+package com.baru.survivor.backend.agents;
+
+import java.io.IOException;
+import java.util.Random;
+
+import com.badlogic.gdx.Gdx;
+import com.baru.survivor.frontend.Survivors;
+
+public class Agent {
+	
+	private int x;
+	private int y;
+	private String name = "Pepe";
+	
+	public Agent(){
+		Random rand = new Random();
+		x = (int) (rand.nextFloat() * Survivors.width);
+		y = (int) (rand.nextFloat() * Survivors.height);
+		NameGenerator ng;
+		try {
+			ng = new NameGenerator(Gdx.files.internal("roman.syl").reader(15));
+			name = ng.compose(3);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public int x() {
+		return x;
+	}
+	
+	public int y() {
+		return y;
+	}
+
+	public CharSequence name() {
+		return name;
+	}
+}

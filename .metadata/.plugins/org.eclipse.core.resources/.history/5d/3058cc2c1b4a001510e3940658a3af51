@@ -1,0 +1,146 @@
+package com.baru.survivor.frontend;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.baru.survivor.Survivor;
+import com.baru.survivor.backend.Status;
+import com.baru.survivor.backend.agents.Agent;
+import com.baru.survivor.backend.map.ParticleDeposition;
+import com.baru.survivor.frontend.canvas.Grid;
+
+public class UI {
+
+	//GRID STUFF
+	private boolean renderGrid = true;
+	private SpriteBatch batch;
+	private Grid grid;
+	
+	//FONT UI
+	private BitmapFont font;
+	
+	//UI
+	
+	//TEST PD
+	private Texture text;
+	private
+	private double[][] img;
+	
+	public void create(Status status) {
+		if (renderGrid){
+			grid = new Grid();		
+			grid.fillTerrainLayers(status.getTerrain());
+			grid.fillAgentVisuals(status.getAgents());
+			
+			FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
+			FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+			parameter.size = 10;
+			parameter.color = Color.WHITE;
+			parameter.borderColor = Color.BLACK;
+			parameter.borderWidth = 1;
+			parameter.borderStraight = true;
+			font = generator.generateFont(parameter);
+			generator.dispose();
+			pix = new Pixmap(32, 32, Format.RGBA8888);
+			text = new Texture(Gdx.files.internal(Survivor.spriteSheet));
+			
+		} else {
+			img = (new ParticleDeposition(Survivors.width, Survivors.height)).makeDeposition(3, 5);
+			pix = new Pixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Pixmap.Format.RGBA8888);				
+			text = new Texture(pix);
+		}
+		batch = new SpriteBatch();
+	}
+
+	public void render(Status status) {
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		batch.begin();
+		if (renderGrid) {
+			
+			grid.updateAgentLayer(status.getAgents());
+//			if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+//				Agent agent = status.getAgentAt(Gdx.input.getX()/Survivor.tileSize, 
+//						(Gdx.input.getY())/Survivor.tileSize);
+//		        if (agent != null){
+//		        	grid.selectAgent(agent);		        	
+//		        }
+//		        //System.out.println(Gdx.input.getX()/Survivor.tileSize +" "+(Gdx.input.getY())/Survivor.tileSize);
+//				//font.draw(batch, "HERE", Gdx.input.getX(), (Gdx.graphics.getHeight() - Gdx.input.getY()));
+//		    }
+
+			grid.draw(batch);
+			for (Agent agent: status.getAgents()){
+				drawAgentName(agent);
+				drawAgentBars(agent);
+			}
+		} else{
+			for (int i = 0 ; i < Gdx.graphics.getWidth(); i++){
+				for (int j = 0; j < Gdx.graphics.getHeight(); j++){
+					pix.setColor((float)img[i/32][j/32],(float)img[i/32][j/32], (float)img[i/32][j/32], (float)1);
+					pix.drawPixel(i, j);
+				}
+			}
+			text = new Texture(pix);
+			batch.draw(text, 0,0);
+		}	
+		
+		batch.end();
+	}
+
+	private void drawAgentBars(Agent agent) {
+		
+		pix.setColor(0.28f, 0.22f, 0.15f, 1f);
+		pix.fill();
+		text = new Texture(pix);
+		batch.draw(text, agent.x() * Survivor.tileSize, Gdx.graphics.getHeight() - (agent.y()+1) * Survivor.tileSize - 3, 32, 4);
+		
+		pix.setColor(0.96f, 0.44f, 0.37f, 0.4f);
+		pix.fill();
+		text = new Texture(pix);
+		batch.draw(text, agent.x() * Survivor.tileSize + 1, Gdx.graphics.getHeight() - (agent.y()+1) * Survivor.tileSize - 2, 30, 2);
+		
+		pix.setColor(0.96f, 0.44f, 0.37f, 1);
+		pix.fill();
+		text = new Texture(pix);
+		batch.draw(text, agent.x() * Survivor.tileSize + 1, Gdx.graphics.getHeight() - (agent.y()+1) * Survivor.tileSize - 2, 30 * agent.getHunger(), 2);
+		
+		pix.setColor(0.28f, 0.22f, 0.15f, 1f);
+		pix.fill();
+		text = new Texture(pix);
+		batch.draw(text, agent.x() * Survivor.tileSize, Gdx.graphics.getHeight() - (agent.y()+1) * Survivor.tileSize - 6, 32, 4);
+		
+		pix.setColor(0.40f, 0.72f, 0.91f, 0.4f);
+		pix.fill();
+		text = new Texture(pix);
+		batch.draw(text, agent.x() * Survivor.tileSize + 1, Gdx.graphics.getHeight() - (agent.y()+1) * Survivor.tileSize - 5, 30, 2);
+
+		
+		pix.setColor(0.40f, 0.72f, 0.91f, 1f);
+		pix.fill();
+		text = new Texture(pix);
+		batch.draw(text, agent.x() * Survivor.tileSize + 1, Gdx.graphics.getHeight() - (agent.y()+1) * Survivor.tileSize - 5, 30 * agent.getThirst(), 2);
+		
+	}
+
+	private void drawAgentName(Agent agent) {
+		font.draw(batch, agent.name(), agent.x() * Survivor.tileSize - 9,
+				Gdx.graphics.getHeight() - ((agent.y()+1) * Survivor.tileSize) + 36);
+	}
+
+	public void dispose() {
+		font.dispose();
+		grid.dispose();
+		text.dispose();
+		batch.dispose();
+	}
+
+}

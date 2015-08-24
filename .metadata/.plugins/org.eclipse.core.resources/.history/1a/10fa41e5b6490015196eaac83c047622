@@ -1,0 +1,34 @@
+package com.baru.survivor;
+
+import com.badlogic.gdx.ApplicationAdapter;
+import com.baru.survivor.backend.Status;
+import com.baru.survivor.frontend.UI;
+
+public class Survivor extends ApplicationAdapter {
+	
+	public static final int width = 26;
+	public static final int height = 26;
+	public static final int tileSize = 32;
+	public static final String spriteSheet = "spriteSheet-big.png";
+	
+	Status status;
+	UI ui;
+	
+	@Override
+	public void create() {
+		status = new Status();
+		ui = new UI();
+		status.create();
+		ui.create(status);
+	}
+
+	public void dispose(){
+		ui.dispose();
+	}
+	
+	@Override
+	public void render() {
+		status.nextState();
+		ui.render(status);
+	}
+}

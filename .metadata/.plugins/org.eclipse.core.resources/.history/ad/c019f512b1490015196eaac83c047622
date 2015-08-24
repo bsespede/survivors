@@ -1,0 +1,21 @@
+package com.baru.survivor.backend.agents;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AgentManager {
+
+	private List<Agent> agents = new ArrayList<Agent>();
+	
+	public Agent createAgent(){
+		return new Agent();
+	}
+
+	public void add(Agent newAgent) {
+		agents.add(newAgent);
+	}
+	
+	public List<Agent> getAgents(){
+		
+	}
+}

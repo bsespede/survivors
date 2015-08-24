@@ -1,0 +1,63 @@
+package com.baru.survivor.frontend;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.baru.survivor.backend.Status;
+import com.baru.survivor.backend.map.ParticleDeposition;
+import com.baru.survivor.frontend.canvas.Grid;
+
+public class UI {
+
+	private SpriteBatch batch;
+	private Grid grid;
+	
+	//TEST
+	private Pixmap pix;
+	private Texture text;
+	private Sprite spr;
+	private double[][] img;
+	
+	public void create(Status simulator) {
+		batch = new SpriteBatch();
+		//grid = new Grid();		
+		//grid.fillTerrainLayers(simulator.getTerrain());
+		// TODO: faltan agentes y recursos en el mapa
+		
+		//TEST
+		pix = new Pixmap(832, 832, Format.RGBA8888);
+		text = new Texture(pix);
+		spr = new Sprite(text);	
+		//img = (new ParticleDeposition(Survivors.width, Survivors.height)).makeDeposition(3, 5);
+	}
+
+	public void render() {
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		batch.begin();
+		//grid.draw(batch);
+		
+		//TEST
+		for (int i = 0 ; i < 832; i++){
+			for (int j = 0; j < 832; j++){
+				//pix.setColor(Color.BROWN);
+				//pix.drawPixel(i, j);
+			}
+		}
+		spr.draw(batch);
+		batch.end();
+	}
+
+	public void dispose() {
+		batch.dispose();
+		pix.dispose();
+		text.dispose();
+		//grid.dispose();
+	}
+
+}
