@@ -18,7 +18,7 @@ public class ParticleDeposition {
 		Random rand = new Random();
 		double maxDist = distanceToCenter(0.0, 0.0);
 		while (passes > 0){
-			double curMaxDist = maxDist - (maxDist / (1.5*passes)) ;
+			double curMaxDist = maxDist - maxDist/passes;
 			int curDeposition = depositions;
 			while (curDeposition > 0) {	
 				
@@ -39,31 +39,28 @@ public class ParticleDeposition {
 		}
 		return heightMap;
 	}
+	
+	public double[][] islandify(){
+		for(int i = 0; i < width; i ++) {
+			for (int j = 0; j < height; j++){
+				heightMap[i][j] *= 1 - (distanceToCenter(i, j)/distanceToCenter(0, 0));
+			}
+		}
+		return heightMap;
+	}
 
 	private void rollParticle(int x, int y) {
 		if (canRollDown(x, y, x, y-1)){
 			rollParticle(x,y-1);
 			return;
-		} else if (canRollDown(x, y, x+1, y-1)){
-			rollParticle(x+1,y-1);
-			return;
 		} else if (canRollDown(x, y, x+1, y)){
 			rollParticle(x+1,y);
-			return;
-		} else if (canRollDown(x, y, x+1, y+1)){
-			rollParticle(x+1,y+1);
 			return;
 		} else if (canRollDown(x, y, x, y+1)){
 			rollParticle(x,y+1);
 			return;
-		} else if (canRollDown(x, y, x-1, y+1)){
-			rollParticle(x-1,y+1);
-			return;
 		} else if (canRollDown(x, y, x-1, y)){
 			rollParticle(x-1,y);
-			return;
-		} else if (canRollDown(x, y, x-1, y-1)){
-			rollParticle(x-1,y-1);
 			return;
 		} else{
 			if (validPoint(x, y)){
@@ -78,7 +75,7 @@ public class ParticleDeposition {
 	}
 	
 	private boolean validPoint(int x, int y){
-		return (x >= 2 && x < width-2) && (y >= 2 && y < height-2);
+		return (x >= 0 && x < width-0) && (y >= 0 && y < height-0);
 	}
 	private double distanceToCenter(double x, double y){
 		double centerX = width/2;

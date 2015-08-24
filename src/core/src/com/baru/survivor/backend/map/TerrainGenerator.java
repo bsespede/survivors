@@ -12,7 +12,8 @@ public class TerrainGenerator {
 	}
 	
 	public Terrain generateMap(){
-		double[][] particles = (new ParticleDeposition(Survivors.width, Survivors.height)).makeDeposition(4, 5);
+		ParticleDeposition particleGen = new ParticleDeposition(Survivors.width, Survivors.height);
+		double[][] particles = particleGen.makeDeposition(5, 5);
 		boolean containsGrass = false;
 		Tile[][] tiles = new Tile[Survivors.width][Survivors.height];
 		AutoTile autoTiles = new AutoTile();

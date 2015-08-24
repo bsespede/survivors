@@ -57,7 +57,7 @@ public class UI {
 			barHg = new TextureRegion(text, 0, 896, 32, 5);
 			barTh = new TextureRegion(text, 0, 901, 32, 5);
 		} else {
-			img = (new ParticleDeposition(Survivors.width, Survivors.height)).makeDeposition(3, 5);
+			img = (new ParticleDeposition(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())).makeDeposition(10, 300);
 			pix = new Pixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Pixmap.Format.RGBA8888);				
 			text = new Texture(pix);
 		}
@@ -84,13 +84,13 @@ public class UI {
 
 			grid.draw(batch);
 			for (Agent agent: status.getAgents()){
-				drawAgentName(agent);
 				drawAgentBars(agent);
+				drawAgentName(agent);
 			}
 		} else{
 			for (int i = 0 ; i < Gdx.graphics.getWidth(); i++){
 				for (int j = 0; j < Gdx.graphics.getHeight(); j++){
-					pix.setColor((float)img[i/32][j/32],(float)img[i/32][j/32], (float)img[i/32][j/32], (float)1);
+					pix.setColor((float)img[i][j],(float)img[i][j], (float)img[i][j], (float)1);
 					pix.drawPixel(i, j);
 				}
 			}
