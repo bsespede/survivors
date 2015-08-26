@@ -18,7 +18,7 @@ public class ParticleDeposition {
 		Random rand = new Random();
 		double maxDist = distanceToCenter(0.0, 0.0);
 		while (passes > 0){
-			double curMaxDist = maxDist - maxDist/passes;
+			double curMaxDist = maxDist ;
 			int curDeposition = depositions;
 			while (curDeposition > 0) {	
 				

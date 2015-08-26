@@ -11,8 +11,8 @@ public class Agent {
 	private int x;
 	private int y;
 	private String name;
-	private float hunger = 0.5f;
-	private float thirst = 0.65f;
+	private float hunger = 1f;
+	private float thirst = 1f;
 	
 	public Agent(){
 		Random rand = new Random();
@@ -45,6 +45,23 @@ public class Agent {
 
 	public float getHunger() {
 		return hunger;
+	}
+
+	public void hungerTick() {
+		if (hunger > 0){
+			hunger -= 0.05;			
+		} else {
+			//kill
+		}
+		
+	}
+
+	public void thirstTick() {
+		if (thirst > 0){
+			thirst -= 0.025;		
+		} else {
+			//kill
+		}
 	}
 	
 }

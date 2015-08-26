@@ -13,14 +13,13 @@ public class TerrainGenerator {
 	
 	public Terrain generateMap(){
 		ParticleDeposition particleGen = new ParticleDeposition(Survivors.width, Survivors.height);
-		double[][] particles = particleGen.makeDeposition(5, 5);
-		boolean containsGrass = false;
+		double[][] particles = particleGen.makeDeposition(10, 5);
 		Tile[][] tiles = new Tile[Survivors.width][Survivors.height];
 		AutoTile autoTiles = new AutoTile();
 		for (int i = 0; i < Survivors.width; i++) {
 			for (int j = 0; j < Survivors.height; j++) {
 				double particleHeight = particles[i][j];
-				if (particleHeight < 0.2){
+				if (particleHeight < 0.1){
 					tiles[i][j] = new Tile(TileType.WATER, true);
 				} else {
 					if (particleHeight < 0.35){
@@ -47,7 +46,6 @@ public class TerrainGenerator {
 					} else {
 						tiles[i][j] = new Tile(TileType.MOUNTAIN, true);
 					}
-					containsGrass = true;
 					autoTiles.addTile(i, j);
 				}
 			}
@@ -72,6 +70,7 @@ public class TerrainGenerator {
 			}
 		}
 		
-		return containsGrass? new Terrain(tiles, autoTiles) : generateMap();
+		
+		return new Terrain(tiles, autoTiles);
 	}	
 }

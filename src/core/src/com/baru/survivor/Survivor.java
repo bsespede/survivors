@@ -28,7 +28,7 @@ public class Survivor extends ApplicationAdapter {
 	
 	@Override
 	public void render() {
-		status.nextState();
+		status.nextState(System.currentTimeMillis());
 		ui.render(status);
 	}
 }

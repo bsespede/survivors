@@ -13,6 +13,8 @@ public class Status {
 	private Terrain terrainManager = new Terrain();
 	private List<Agent> agentManager = new ArrayList<Agent>();
 	private List<Resource> resourceManager = new ArrayList<Resource>();
+	private long lastTick = System.currentTimeMillis();
+	private final int tickTime = 1000;
 
 	public void generateMap() {
 		terrainManager = (new TerrainGenerator()).generateMap();
@@ -45,8 +47,14 @@ public class Status {
 		return resourceManager;
 	}
 	
-	public void nextState(){
-		
+	public void nextState(long curTime){
+		if (curTime - lastTick > tickTime) {
+			for (Agent agent: agentManager){
+				agent.hungerTick();
+				agent.thirstTick();
+			}
+			lastTick = curTime;
+		}
 	}
 
 	public void create() {
