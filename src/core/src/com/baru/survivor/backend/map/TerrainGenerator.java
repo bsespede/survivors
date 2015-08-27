@@ -2,22 +2,18 @@ package com.baru.survivor.backend.map;
 
 import java.util.Random;
 
-import com.baru.survivor.frontend.Survivors;
+import com.baru.survivor.Survivor;
 
 public class TerrainGenerator {
 	
-	Random rand = new Random();
-	
-	public TerrainGenerator(){
-	}
-	
-	public Terrain generateMap(){
-		ParticleDeposition particleGen = new ParticleDeposition(Survivors.width, Survivors.height);
-		double[][] particles = particleGen.makeDeposition(10, 5);
-		Tile[][] tiles = new Tile[Survivors.width][Survivors.height];
+	public static TerrainManager generateMap(){
+		Random rand = new Random();
+		ParticleDeposition particleGen = new ParticleDeposition(Survivor.width, Survivor.height);
+		double[][] particles = particleGen.makeDeposition(5, 3);
+		Tile[][] tiles = new Tile[Survivor.width][Survivor.height];
 		AutoTile autoTiles = new AutoTile();
-		for (int i = 0; i < Survivors.width; i++) {
-			for (int j = 0; j < Survivors.height; j++) {
+		for (int i = 0; i < Survivor.width; i++) {
+			for (int j = 0; j < Survivor.height; j++) {
 				double particleHeight = particles[i][j];
 				if (particleHeight < 0.1){
 					tiles[i][j] = new Tile(TileType.WATER, true);
@@ -25,14 +21,10 @@ public class TerrainGenerator {
 					if (particleHeight < 0.35){
 						tiles[i][j] = new Tile(TileType.GRASS, false);
 						float grassLandContent = rand.nextFloat();
-						if (grassLandContent < 0.01) {
-							tiles[i][j] = new Tile(TileType.HOUSE, false);
-						} else if (grassLandContent < 0.2) {
+						if (grassLandContent < 0.1) {
 							tiles[i][j] = new Tile(TileType.TREE, false);
-						} else if (grassLandContent < 0.25) {
+						} else if (grassLandContent < 0.15) {
 							tiles[i][j] = new Tile(TileType.PLATEAU, false);
-						} else if (grassLandContent < 0.26) {
-							tiles[i][j] = new Tile(TileType.LAKE, false);
 						}
 					} else if (particleHeight < 0.4){
 						if (rand.nextFloat() < 0.7) {
@@ -51,8 +43,8 @@ public class TerrainGenerator {
 			}
 		}
 		
-		for (int x = 0; x < Survivors.width; x++) {
-			for (int y = 0; y < Survivors.height; y++) {
+		for (int x = 0; x < Survivor.width; x++) {
+			for (int y = 0; y < Survivor.height; y++) {
 				if (tiles[x][y].getType() == TileType.WATER && autoTiles.get(x, y) == 0){
 					{
 						tiles[x][y] = new Tile(TileType.GRASS, false);	
@@ -62,15 +54,14 @@ public class TerrainGenerator {
 			}
 		}
 		
-		for (int x = 0; x < Survivors.width; x++) {
-			for (int y = 0; y < Survivors.height; y++) {
+		for (int x = 0; x < Survivor.width; x++) {
+			for (int y = 0; y < Survivor.height; y++) {
 				if (tiles[x][y].getType() == TileType.WATER && autoTiles.get(x, y) != 15){
 					tiles[x][y] = new Tile(TileType.COAST, true);
 				}
 			}
 		}
 		
-		
-		return new Terrain(tiles, autoTiles);
+		return new TerrainManager(tiles, autoTiles);
 	}	
 }

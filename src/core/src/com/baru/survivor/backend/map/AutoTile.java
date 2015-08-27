@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.baru.survivor.frontend.Survivors;
+import com.baru.survivor.Survivor;
 
 public class AutoTile {
 
@@ -12,9 +12,9 @@ public class AutoTile {
 	private byte[][] bitStatus;
 	
 	public AutoTile() {
-		bitStatus = new byte[Survivors.width][Survivors.height];
-		for (int i = 0; i < Survivors.width; i++) {
-			for (int j = 0; j < Survivors.height; j++) {
+		bitStatus = new byte[Survivor.width][Survivor.height];
+		for (int i = 0; i < Survivor.width; i++) {
+			for (int j = 0; j < Survivor.height; j++) {
 				bitStatus[i][j] = 15;
 			}
 		}
@@ -67,7 +67,7 @@ public class AutoTile {
 	}
 
 	private boolean validPoint(int x, int y) {
-		return (x >= 0 && x < Survivors.width) && (y >= 0 && y < Survivors.height);
+		return (x >= 0 && x < Survivor.width) && (y >= 0 && y < Survivor.height);
 	}
 
 	public byte get(int x, int y) {

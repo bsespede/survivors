@@ -17,5 +17,7 @@ public enum TileType {
 	WATER,
 	WATER_DECORATION, 
 	SHADE,
-	SELECTION	
+	SELECTION, 
+	SKULL,
+	FOOD	
 }

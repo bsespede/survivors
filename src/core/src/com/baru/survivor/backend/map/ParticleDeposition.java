@@ -18,7 +18,7 @@ public class ParticleDeposition {
 		Random rand = new Random();
 		double maxDist = distanceToCenter(0.0, 0.0);
 		while (passes > 0){
-			double curMaxDist = maxDist ;
+			double curMaxDist = maxDist - (maxDist/passes);
 			int curDeposition = depositions;
 			while (curDeposition > 0) {	
 				
@@ -71,11 +71,11 @@ public class ParticleDeposition {
 	}
 
 	private boolean canRollDown(int fromX, int fromY, int toX, int toY) {
-		return validPoint(fromX, fromY) && validPoint(toX, toY)&& (heightMap[toX][toY] < heightMap[fromX][fromY]);
+		return validPoint(fromX, fromY) && validPoint(toX, toY) && (heightMap[toX][toY] < heightMap[fromX][fromY]);
 	}
 	
 	private boolean validPoint(int x, int y){
-		return (x >= 0 && x < width-0) && (y >= 0 && y < height-0);
+		return (x >= 1 && x < width - 1) && (y >= 1 && y < height - 1);
 	}
 	private double distanceToCenter(double x, double y){
 		double centerX = width/2;

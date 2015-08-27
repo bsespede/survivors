@@ -3,7 +3,7 @@ package com.baru.survivor.frontend.sprite;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.baru.survivor.frontend.Survivors;
+import com.baru.survivor.Survivor;
 
 public class SimpleSprite {
 
@@ -20,8 +20,8 @@ public class SimpleSprite {
 	}
 	
 	public TextureRegion getTextureRegionByIndex(int index) {
-		int x = (spriteIndexes[index] % 7) * Survivors.tileSize;
-	    int y = Survivors.tileSize * (spriteIndexes[index] / 7);
-		return new TextureRegion(texture, x, y, Survivors.tileSize, Survivors.tileSize);
+		int x = (spriteIndexes[index] % 7) * Survivor.tileSize;
+	    int y = Survivor.tileSize * (spriteIndexes[index] / 7);
+		return new TextureRegion(texture, x, y, Survivor.tileSize, Survivor.tileSize);
 	}
 }

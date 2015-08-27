@@ -6,8 +6,8 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.baru.survivor.Survivor;
 import com.baru.survivor.backend.map.TileType;
-import com.baru.survivor.frontend.Survivors;
 
 public class SpriteGenerator {
 
@@ -15,11 +15,11 @@ public class SpriteGenerator {
 	private Map<TileType, SpriteSelector> spriteGenerator = new HashMap<TileType, SpriteSelector>();
 	
 	public void initialize() throws IOException{
-		spriteSheet = new Texture(Gdx.files.internal(Survivors.spriteSheet));
+		spriteSheet = new Texture(Gdx.files.internal(Survivor.spriteSheet));
 		int[][] grass = {{175}, {176}, {177}, {178}, {179}, {180}, {181}, {182}, {183}, {184}, {185},
 				{186}, {187}, {188}, {189}, {190}};
 		int[][] grassDeco = {{1}, {2}};
-		int[][] tree = {{5}, {6}};
+		int[][] tree = {{5}};
 		int[][] forest = {{6}};
 		int[][] mountains = {{10}, {11}, {12}};
 		int[][] plateaus = {{13}, {27}};
@@ -33,7 +33,9 @@ public class SpriteGenerator {
 		int[][] waterDeco = {{238}, {239}, {195}};
 		int[][] shade = {{0}};
 		int[][] selection = {{297}};
+		int[][] skull = {{301}};
 		spriteGenerator.put(TileType.SELECTION, new SpriteSelector(spriteSheet, selection));
+		spriteGenerator.put(TileType.SKULL, new SpriteSelector(spriteSheet, skull));
 		spriteGenerator.put(TileType.SHADE, new SpriteSelector(spriteSheet, shade));
 		spriteGenerator.put(TileType.VILLAGER, new SpriteSelector(spriteSheet, villagers));
 		spriteGenerator.put(TileType.GRASS, new SpriteSelector(spriteSheet, grass));

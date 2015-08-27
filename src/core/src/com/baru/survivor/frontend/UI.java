@@ -3,7 +3,6 @@ package com.baru.survivor.frontend;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,54 +12,40 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.baru.survivor.Survivor;
 import com.baru.survivor.backend.Status;
 import com.baru.survivor.backend.agents.Agent;
-import com.baru.survivor.backend.map.ParticleDeposition;
 import com.baru.survivor.frontend.canvas.Grid;
 
 public class UI {
 
-	//GRID STUFF
-	private boolean renderGrid = true;
 	private SpriteBatch batch;
 	private Grid grid;
-	
-	//FONT UI
+
 	private BitmapFont font;
-	
-	//UI
-	
-	//TEST PD
+
 	private Texture text;
 	private TextureRegion barBg;
 	private TextureRegion barHg;
 	private TextureRegion barTh;
 	
-	private Pixmap pix;
-	private double[][] img;
-	
 	public void create(Status status) {
-		if (renderGrid){
-			grid = new Grid();		
-			grid.fillTerrainLayers(status.getTerrain());
-			grid.fillAgentVisuals(status.getAgents());
-			
-			FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
-			FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-			parameter.size = 8;
-			parameter.color = Color.WHITE;
-			parameter.borderColor = Color.BLACK;
-			parameter.borderWidth = 1;
-			parameter.borderStraight = true;
-			font = generator.generateFont(parameter);
-			generator.dispose();
-			text = new Texture(Gdx.files.internal(Survivor.spriteSheet));
-			barBg = new TextureRegion(text, 32, 896, 32, 10);
-			barHg = new TextureRegion(text, 0, 896, 32, 5);
-			barTh = new TextureRegion(text, 0, 901, 32, 5);
-		} else {
-			img = (new ParticleDeposition(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())).makeDeposition(10, 300);
-			pix = new Pixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Pixmap.Format.RGBA8888);				
-			text = new Texture(pix);
-		}
+
+		grid = new Grid();		
+		grid.fillTerrainLayers(status.getTerrainManager());
+		grid.fillAgentVisuals(status.getAgentsManager());
+		
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
+		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		parameter.size = 8;
+		parameter.color = Color.WHITE;
+		parameter.borderColor = Color.BLACK;
+		parameter.borderWidth = 1;
+		parameter.borderStraight = true;
+		font = generator.generateFont(parameter);
+		generator.dispose();
+		text = new Texture(Gdx.files.internal(Survivor.spriteSheet));
+		barBg = new TextureRegion(text, 32, 896, 32, 10);
+		barHg = new TextureRegion(text, 0, 896, 32, 5);
+		barTh = new TextureRegion(text, 0, 901, 32, 5);
+
 		batch = new SpriteBatch();
 	}
 
@@ -69,35 +54,12 @@ public class UI {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		batch.begin();
-		if (renderGrid) {
-			
-			grid.updateAgentLayer(status.getAgents());
-//			if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
-//				Agent agent = status.getAgentAt(Gdx.input.getX()/Survivor.tileSize, 
-//						(Gdx.input.getY())/Survivor.tileSize);
-//		        if (agent != null){
-//		        	grid.selectAgent(agent);		        	
-//		        }
-//		        //System.out.println(Gdx.input.getX()/Survivor.tileSize +" "+(Gdx.input.getY())/Survivor.tileSize);
-//				//font.draw(batch, "HERE", Gdx.input.getX(), (Gdx.graphics.getHeight() - Gdx.input.getY()));
-//		    }
-
-			grid.draw(batch);
-			for (Agent agent: status.getAgents()){
-				drawAgentBars(agent);
-				drawAgentName(agent);
-			}
-		} else{
-			for (int i = 0 ; i < Gdx.graphics.getWidth(); i++){
-				for (int j = 0; j < Gdx.graphics.getHeight(); j++){
-					pix.setColor((float)img[i][j],(float)img[i][j], (float)img[i][j], (float)1);
-					pix.drawPixel(i, j);
-				}
-			}
-			text = new Texture(pix);
-			batch.draw(text, 0,0);
-		}	
-		
+		grid.updateAgentLayer(status.getAgents());
+		grid.draw(batch);
+		for (Agent agent: status.getAgents()){
+			drawAgentName(agent);
+			drawAgentBars(agent);
+		}
 		batch.end();
 	}
 
@@ -115,9 +77,8 @@ public class UI {
 	}
 
 	public void dispose() {
-		font.dispose();
 		grid.dispose();
-		//pix.dispose();
+		font.dispose();
 		text.dispose();
 		batch.dispose();
 	}

@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.baru.survivor.Survivor;
 import com.baru.survivor.backend.agents.Agent;
-import com.baru.survivor.backend.map.Terrain;
+import com.baru.survivor.backend.agents.AgentManager;
+import com.baru.survivor.backend.map.TerrainManager;
 import com.baru.survivor.backend.map.TileType;
-import com.baru.survivor.frontend.Survivors;
 import com.baru.survivor.frontend.sprite.SimpleSprite;
 import com.baru.survivor.frontend.sprite.SpriteGenerator;
 
@@ -21,7 +21,6 @@ public class Grid {
 	private SpriteGenerator spriteGenerator = new SpriteGenerator();
 	private Map<Agent, SimpleSprite> agentVisuals = new HashMap<Agent, SimpleSprite>();
 	private List<Layer> layers = new ArrayList<Layer>();
-	private Agent selectedAgent;
 	
 	public Grid() {
 		for (int i = 0; i < 6; i++) {
@@ -29,32 +28,25 @@ public class Grid {
 		}
 	}
 	
-	public void selectAgent(Agent agent){
-		selectedAgent = agent;
-	}
-	
 	public SimpleSprite getSprite(int x, int y, int layer) {
 		return layers.get(layer).getSprite(x, y);
 	}
 
-	public void fillTerrainLayers(Terrain map) {
+	public void fillTerrainLayers(TerrainManager map) {
 		Random rand = new Random();
-		// Preparo spriteSheet
 		try {
 			spriteGenerator.initialize();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// Layer 0 water		
 		Layer waterLayer = layers.get(0);
 		Layer landLayer = layers.get(1);
 		Layer shadeLayer = layers.get(2);
 		Layer decoLayer = layers.get(3);
 		
 		boolean shouldShade = true;
-		for (int i = 0; i < Survivors.width; i++) {
-			for (int j = 0; j < Survivors.height; j++) {
+		for (int i = 0; i < Survivor.width; i++) {
+			for (int j = 0; j < Survivor.height; j++) {
 				if (shouldShade){
 					shadeLayer.setSprite(spriteGenerator.generateIndex(TileType.SHADE, 0), i, j);
 					shouldShade = false;
@@ -109,16 +101,16 @@ public class Grid {
 		}		
 	}
 	
-	public void fillAgentVisuals(List<Agent> agents) {
-		for (Agent agent: agents){
+	public void fillAgentVisuals(AgentManager agentManager) {
+		for (Agent agent: agentManager.getAgents()){
 			agentVisuals.put(agent, spriteGenerator.generateRandom(TileType.VILLAGER));
 		}
 	}
 	
-	public void updateAgentLayer(List<Agent> agents){
+	public void updateAgentLayer(AgentManager agentManager){
 		Layer agentLayer = new Layer();
-		for (Agent agent: agents){
-			agentLayer.setSprite(agentVisuals.get(agent), agent.x(), agent.y());
+		for (Point agentCoord: agentManager.getCoords){
+			agentLayer.setSprite(agentVisuals.get(a), agent.x(), agent.y());
 		}
 		layers.add(4, agentLayer);
 	}
@@ -126,14 +118,7 @@ public class Grid {
 	public void draw(SpriteBatch batch){
 		for (Layer layer: layers){
 			layer.draw(batch);
-		}
-		if (selectedAgent != null){
-			int x = selectedAgent.x();
-			int y = selectedAgent.y();
-			batch.draw(spriteGenerator.generateIndex(TileType.SELECTION, 0).getTextureRegion(), 
-					(x) * Survivors.tileSize,
-					Gdx.graphics.getHeight() - (y+1) * Survivors.tileSize);
-		}
+		}		
 	}
 
 	public void dispose() {
