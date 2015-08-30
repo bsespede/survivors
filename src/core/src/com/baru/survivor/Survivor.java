@@ -7,7 +7,7 @@ import com.baru.survivor.frontend.UI;
 public class Survivor extends ApplicationAdapter {
 	
 	public static final int width = 48;
-	public static final int height = 26;
+	public static final int height = 25;
 	public static final int tileSize = 32;
 	public static final String spriteSheet = "spriteSheet-big.png";
 	
@@ -23,6 +23,7 @@ public class Survivor extends ApplicationAdapter {
 	}
 
 	public void dispose(){
+		
 		ui.dispose();
 	}
 	

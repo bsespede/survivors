@@ -34,6 +34,7 @@ public class SpriteGenerator {
 		int[][] shade = {{0}};
 		int[][] selection = {{297}};
 		int[][] skull = {{301}};
+		int[][] food = {{153}};
 		spriteGenerator.put(TileType.SELECTION, new SpriteSelector(spriteSheet, selection));
 		spriteGenerator.put(TileType.SKULL, new SpriteSelector(spriteSheet, skull));
 		spriteGenerator.put(TileType.SHADE, new SpriteSelector(spriteSheet, shade));
@@ -51,6 +52,7 @@ public class SpriteGenerator {
 		spriteGenerator.put(TileType.WINDMILL, new SpriteSelector(spriteSheet, windmill));
 		spriteGenerator.put(TileType.WATER, new SpriteSelector(spriteSheet, water));
 		spriteGenerator.put(TileType.WATER_DECORATION, new SpriteSelector(spriteSheet, waterDeco));
+		spriteGenerator.put(TileType.FOOD, new SpriteSelector(spriteSheet, food));
 	}
 	
 	public SimpleSprite generateRandom(TileType type) {

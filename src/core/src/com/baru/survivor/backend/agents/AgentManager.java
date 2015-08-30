@@ -1,39 +1,78 @@
 package com.baru.survivor.backend.agents;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
 
-import com.baru.survivor.backend.village.Village;
+import com.baru.survivor.Survivor;
+import com.baru.survivor.backend.map.TerrainManager;
+import com.baru.survivor.backend.map.TileType;
+import com.baru.survivor.backend.resources.Resource;
+import com.baru.survivor.backend.resources.ResourceManager;
 
 public class AgentManager {
 
-	private Map<Point, Agent> agents = new HashMap<Point, Agent>();
+	private List<Agent> agents = new ArrayList<Agent>();
 
 	public void tickTime() {
-		for (Point agentCoord: agents.keySet()){
-			Agent agent = agents.get(agentCoord);
+		for (Agent agent: agents){
 			agent.thirstTick();
 			agent.hungerTick();
-			if (agent.isDead()){
-				agents.remove(agent);
+		}
+	}
+	
+	public List<Agent> getAgents() {
+		return agents;
+	}
+
+	public void generateAgent(Point position) {
+		Agent agent = new Agent(position);
+		agents.add(agent);
+	}
+	
+	public Agent getAgent(int x, int y) {
+		for (Agent agent: agents) {
+			if (agent.x() == x && agent.y() == y) {
+				return agent;
+			}
+		}
+		return null;
+	}
+
+	public void move(TerrainManager terrainManager) {
+		for (Agent agent: agents) {
+			if (!agent.isDead()) {
+				int directionIndex = new Random().nextInt(Direction.values().length);
+				Direction dir = Direction.values()[directionIndex];				
+				Point destPoint = new Point(agent.x() + dir.getX(), agent.y() + dir.getY());
+				if (validPoint(destPoint) && !terrainManager.isBlocked(destPoint.x, destPoint.y) && getAgent(destPoint.x, destPoint.y) == null) {
+					agent.move(dir);
+				}
 			}
 		}
 	}
 	
-	public Collection<Agent> getAgents() {
-		return agents.values();
+	private boolean validPoint(Point point){
+		return (point.x >= 0 && point.x < Survivor.width) && (point.y >= 0 && point.y < Survivor.height);
 	}
 
-	public Agent getAgentAt(int x, int y) {
-		return agents.get(new Point(x, y));
-	}
-
-	public void generateAgent(Village tribe) {
-		Agent agent = new Agent(tribe);
-		agents.put(new Point(tribe.getVillageX(), tribe.getVillageY()), agent);	
-		agent.enterVillage();
+	public void pickup(ResourceManager resourceManager) {
+		for (Agent agent: agents) {
+			Resource resource = resourceManager.getResource(agent.x(), agent.y());
+			if (resource != null) {
+				if (resource.getResourceType() == TileType.FOOD) {
+					resource.consumeResource();
+					agent.removeHunger();
+				} else {
+					resource.consumeResource();
+					agent.removeThirst();
+				}
+			}			
+		}
 	}
 	
 }

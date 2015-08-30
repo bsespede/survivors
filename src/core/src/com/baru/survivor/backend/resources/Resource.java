@@ -1,12 +1,14 @@
 package com.baru.survivor.backend.resources;
 
+import com.baru.survivor.backend.map.TileType;
+
 public class Resource {
 
 	private long createTime;
-	private ResourceType resourceType;
+	private TileType resourceType;
 	private int amount;
 	
-	public Resource(ResourceType resourceType, long curTime, int amount){
+	public Resource(TileType resourceType, long curTime, int amount){
 		this.createTime = curTime;
 		this.amount = amount;
 		this.resourceType = resourceType;
@@ -16,7 +18,7 @@ public class Resource {
 		return createTime;
 	}
 
-	public ResourceType getResourceType() {
+	public TileType getResourceType() {
 		return resourceType;
 	}
 

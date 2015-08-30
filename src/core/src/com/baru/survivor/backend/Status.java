@@ -4,20 +4,24 @@ import com.baru.survivor.backend.agents.AgentManager;
 import com.baru.survivor.backend.map.TerrainGenerator;
 import com.baru.survivor.backend.map.TerrainManager;
 import com.baru.survivor.backend.resources.ResourceManager;
-import com.baru.survivor.backend.village.Village;
+import com.baru.survivor.backend.village.Tribe;
+import com.baru.survivor.backend.village.TribeManager;
 
 public class Status {
 
 	private TerrainManager terrainManager = new TerrainManager();
 	private AgentManager agentManager = new AgentManager();
 	private ResourceManager resourceManager = new ResourceManager();
+	private TribeManager tribeManager = new TribeManager();
 	private long lastTick = System.currentTimeMillis();
-	private final int tickTime = 1000;
+	private final int tickTime = 250;
 
 	public void nextState(long curTime){
 		if (curTime - lastTick > tickTime) {
 			agentManager.tickTime();
-			lastTick = curTime;
+			agentManager.move(terrainManager);
+			agentManager.pickup(resourceManager);
+			lastTick = curTime;			
 		}
 	}
 	
@@ -38,9 +42,10 @@ public class Status {
 	
 	private void generateTribes(int tribesNum, int villagersPerTribe) {
 		for (int i = 0; i < tribesNum; i++) {
-			Village tribe = new Village(terrainManager.getSpawnablePoint());
+			Tribe tribe = new Tribe(terrainManager.getSpawnablePoint());
+			tribeManager.addTribe(tribe);
 			for (int j = 0; j < villagersPerTribe; j++) {
-				agentManager.generateAgent(tribe);
+				agentManager.generateAgent(terrainManager.getSpawnablePoint());
 			}
 		}		
 	}
@@ -57,6 +62,14 @@ public class Status {
 		for (int i = 0; i < foodNum; i++) {
 			resourceManager.generateFood(terrainManager.getSpawnablePoint(), curTime, foodDur);			
 		}
+	}
+
+	public AgentManager getAgentsManager() {
+		return agentManager;
+	}
+
+	public ResourceManager getResourceManager() {
+		return resourceManager;
 	}
 	
 }

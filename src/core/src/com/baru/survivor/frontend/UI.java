@@ -50,30 +50,38 @@ public class UI {
 	}
 
 	public void render(Status status) {
+
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		batch.begin();
-		grid.updateAgentLayer(status.getAgents());
+		grid.updateLayer(status.getAgentsManager(), status.getResourceManager());
 		grid.draw(batch);
-		for (Agent agent: status.getAgents()){
-			drawAgentName(agent);
-			drawAgentBars(agent);
+		for (int x = 0; x < Survivor.width; x++) {
+			for (int y = 0; y < Survivor.height; y++) {
+				Agent agent = status.getAgentsManager().getAgent(x, y);
+				if (agent != null) {
+					drawAgentName(agent, x, y);
+					drawAgentBars(agent, x, y);
+				}
+			}			
 		}
 		batch.end();
 	}
 
-	private void drawAgentBars(Agent agent) {
-		batch.draw(barBg, agent.x()*Survivor.tileSize, Gdx.graphics.getHeight()-(agent.y()+1)*Survivor.tileSize-10);
-		batch.draw(barHg, agent.x()*Survivor.tileSize, Gdx.graphics.getHeight()-(agent.y()+1)*Survivor.tileSize-5,
-				32 * agent.getHunger(), 5);
-		batch.draw(barTh, agent.x()*Survivor.tileSize, Gdx.graphics.getHeight()-(agent.y()+1)*Survivor.tileSize-10,
-				32 * agent.getThirst(), 5);
+	private void drawAgentBars(Agent agent, int x, int y) {
+		if (!agent.isDead()) {
+			batch.draw(barBg, x*Survivor.tileSize, Gdx.graphics.getHeight()-(y+1)*Survivor.tileSize-10);
+			batch.draw(barHg, x*Survivor.tileSize, Gdx.graphics.getHeight()-(y+1)*Survivor.tileSize-5,
+					32 * agent.getHunger(), 5);
+			batch.draw(barTh, x*Survivor.tileSize, Gdx.graphics.getHeight()-(y+1)*Survivor.tileSize-10,
+					32 * agent.getThirst(), 5);
+		}
 	}
 
-	private void drawAgentName(Agent agent) {
-		font.draw(batch, agent.name(), agent.x() * Survivor.tileSize - 12,
-				Gdx.graphics.getHeight() - ((agent.y()+1) * Survivor.tileSize) + 36);
+	private void drawAgentName(Agent agent, int x, int y) {
+		font.draw(batch, agent.name(), x * Survivor.tileSize - 12,
+				Gdx.graphics.getHeight() - ((y+1) * Survivor.tileSize) + 36);
 	}
 
 	public void dispose() {

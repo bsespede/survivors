@@ -13,6 +13,8 @@ import com.baru.survivor.backend.agents.Agent;
 import com.baru.survivor.backend.agents.AgentManager;
 import com.baru.survivor.backend.map.TerrainManager;
 import com.baru.survivor.backend.map.TileType;
+import com.baru.survivor.backend.resources.Resource;
+import com.baru.survivor.backend.resources.ResourceManager;
 import com.baru.survivor.frontend.sprite.SimpleSprite;
 import com.baru.survivor.frontend.sprite.SpriteGenerator;
 
@@ -107,15 +109,29 @@ public class Grid {
 		}
 	}
 	
-	public void updateAgentLayer(AgentManager agentManager){
+	public void updateLayer(AgentManager agentManager, ResourceManager resourceManager){
 		Layer agentLayer = new Layer();
-		for (Point agentCoord: agentManager.getCoords){
-			agentLayer.setSprite(agentVisuals.get(a), agent.x(), agent.y());
+		Layer resourceLayer = new Layer();
+		for (int x = 0; x < Survivor.width; x++) {
+			for (int y = 0; y < Survivor.height; y++) {
+				Agent agent = agentManager.getAgent(x, y);
+				if (agent != null) {
+					if (agent.isDead()) {
+						agentVisuals.put(agent, spriteGenerator.generateRandom(TileType.SKULL));
+					}
+					agentLayer.setSprite(agentVisuals.get(agent), x, y);
+				}
+				Resource resource = resourceManager.getResource(x, y);
+				if (resource != null) {
+					resourceLayer.setSprite(spriteGenerator.generateIndex(resource.getResourceType(), 0), x, y);
+				}
+			}							
 		}
-		layers.add(4, agentLayer);
+		layers.set(5, agentLayer);
+		layers.set(4, resourceLayer);
 	}
 	
-	public void draw(SpriteBatch batch){
+	public void draw(SpriteBatch batch){		
 		for (Layer layer: layers){
 			layer.draw(batch);
 		}		

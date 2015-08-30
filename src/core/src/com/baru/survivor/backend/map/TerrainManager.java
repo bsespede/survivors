@@ -26,6 +26,10 @@ public class TerrainManager {
 	public byte getAutoTile(int x, int y){
 		return autoTiles.get(x, y);
 	}
+	
+	public boolean isBlocked(int x, int y) {
+		return tiles[x][y].isBlocked();
+	}
 
 	public Point getSpawnablePoint() {
 		Random rand = new Random();
