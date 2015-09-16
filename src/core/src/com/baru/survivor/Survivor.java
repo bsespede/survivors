@@ -9,6 +9,8 @@ public class Survivor extends ApplicationAdapter {
 	public static final int width = 48;
 	public static final int height = 25;
 	public static final int tileSize = 32;
+	public static final int tickTime = 250;
+	public static final int secondsPerDay = 60;
 	public static final String spriteSheet = "spriteSheet-big.png";
 	
 	Status status;

@@ -41,4 +41,8 @@ public class TerrainManager {
 			}
 		}
 	}
+
+	public static boolean isValidPoint(Point point) {
+		return (point.x >= 0 && point.x < Survivor.width) && (point.y >= 0 && point.y < Survivor.height);
+	}
 }

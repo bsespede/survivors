@@ -1,9 +1,10 @@
 package com.baru.survivor.backend;
 
+import com.baru.survivor.Survivor;
 import com.baru.survivor.backend.agents.AgentManager;
 import com.baru.survivor.backend.map.TerrainGenerator;
 import com.baru.survivor.backend.map.TerrainManager;
-import com.baru.survivor.backend.resources.ResourceManager;
+import com.baru.survivor.backend.resources.ReservoirManager;
 import com.baru.survivor.backend.village.Tribe;
 import com.baru.survivor.backend.village.TribeManager;
 
@@ -11,16 +12,14 @@ public class Status {
 
 	private TerrainManager terrainManager = new TerrainManager();
 	private AgentManager agentManager = new AgentManager();
-	private ResourceManager resourceManager = new ResourceManager();
+	private ReservoirManager resourceManager = new ReservoirManager();
 	private TribeManager tribeManager = new TribeManager();
 	private long lastTick = System.currentTimeMillis();
-	private final int tickTime = 250;
 
 	public void nextState(long curTime){
-		if (curTime - lastTick > tickTime) {
-			agentManager.tickTime();
-			agentManager.move(terrainManager);
-			agentManager.pickup(resourceManager);
+		long elapsedTime = curTime - lastTick;
+		if (elapsedTime > Survivor.tickTime) {
+			agentManager.tickTime(terrainManager, resourceManager);
 			lastTick = curTime;			
 		}
 	}
@@ -68,7 +67,7 @@ public class Status {
 		return agentManager;
 	}
 
-	public ResourceManager getResourceManager() {
+	public ReservoirManager getResourceManager() {
 		return resourceManager;
 	}
 	

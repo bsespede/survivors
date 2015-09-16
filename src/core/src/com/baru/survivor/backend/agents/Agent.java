@@ -2,12 +2,15 @@ package com.baru.survivor.backend.agents;
 
 import java.awt.Point;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.baru.survivor.Survivor;
+import com.baru.survivor.backend.map.TerrainManager;
+import com.baru.survivor.backend.resources.Reservoir;
 import com.baru.survivor.backend.resources.Resource;
+import com.baru.survivor.backend.resources.ReservoirManager;
+import com.baru.survivor.backend.resources.ResourceType;
 
 public class Agent {
 
@@ -16,11 +19,14 @@ public class Agent {
 	private float hunger;
 	private float thirst;
 	private float kindness;
-	private List<Resource> bag = new ArrayList<Resource>();
+	private Bag foodBag;
+	private Bag waterBag;
 	
 	public Agent(Point position){
 		Random rand = new Random();
 		this.kindness = rand.nextFloat();
+		this.foodBag = new Bag();
+		this.waterBag = new Bag();
 		this.hunger = 1;
 		this.thirst = 1;	
 		this.position = position;
@@ -37,15 +43,104 @@ public class Agent {
 		return name;
 	}
 
-	public void hungerTick() {
-		if (hunger > 0){
-			hunger -= 0.01;			
+	public void consumeFromBags(){
+		if (kindness > 0.8){
+			if (hunger < 0.2){
+				consumeFromBag(foodBag);
+			}
+			if (thirst < 0.2){
+				consumeFromBag(waterBag);
+			}
+		}else if (kindness > 0.4){
+			if (hunger < 0.5){
+				consumeFromBag(foodBag);
+			}
+			if (thirst < 0.5){
+				consumeFromBag(waterBag);
+			}
+		}else{
+			if (hunger < 0.2){
+				consumeFromBag(foodBag);
+			}
+			if (thirst < 0.2){
+				consumeFromBag(waterBag);
+			}
+		}
+	}
+	
+	private void consumeFromBag(Bag bag) {
+		Resource resource = bag.getResource();
+		if (resource != null){
+			if (resource.type)
 		}
 	}
 
-	public void thirstTick() {
+	public void addHungerThirst() {
+		float amountToReduce = 1.0f / (Survivor.secondsPerDay * (1000/Survivor.tickTime));
+		if (hunger > 0){
+			hunger -= amountToReduce;
+		}
 		if (thirst > 0){
-			thirst -= 0.01;		
+			thirst -= amountToReduce;
+		}
+	}
+
+	public void move(TerrainManager terrainManager) {
+		if (!isDead()) {
+			int directionIndex = new Random().nextInt(Direction.values().length);
+			Direction dir = Direction.values()[directionIndex];				
+			Point destPoint = new Point(position.x + dir.getX(), position.y + dir.getY());
+			if (TerrainManager.isValidPoint(destPoint) && !terrainManager.isBlocked(destPoint.x, destPoint.y)) {
+				position = new Point(position.x + dir.getX(), position.y + dir.getY());
+			}
+		}
+	}
+	
+	public void pickUp(ReservoirManager reservoirManager) {
+		Reservoir reservoir = reservoirManager.getReservoir(position.x, position.y);
+		if (reservoir != null) {
+				consumeResourceTillFull(reservoir);
+				fillBagWithResource(reservoir);
+		}			
+	}
+
+	private void fillBagWithResource(Reservoir reservoir) {
+		Bag sameTypeBag = getSameTypeBag(reservoir);
+		int resourcesToGrab = sameTypeBag.getAvailableSlots();
+		while (resourcesToGrab > 0 && reservoir.hasResource()){
+			Resource resourceToGrab = reservoir.getResource();
+			sameTypeBag.addresource(resourceToGrab);
+			resourcesToGrab--;
+		}
+	}
+
+	private void consumeResourceTillFull(Reservoir reservoir){
+		ResourceType type = reservoir.type();
+		while (reservoir.hasResource()){
+			if (type == ResourceType.FOOD){
+				if (hunger < 0.8){ 
+					reservoir.getResource();
+					hunger += 0.2; 
+				}else{
+					return;
+				}
+			}
+			if (type == ResourceType.WATER){
+				if (thirst < 0.8){
+					reservoir.getResource();
+					thirst += 0.2; 					
+				}else{
+					return;
+				}
+			}
+		}
+	}
+	
+	private Bag getSameTypeBag(Reservoir reservoir){
+		if (reservoir.type() == ResourceType.FOOD){
+			return foodBag;
+		}else{
+			return waterBag;
 		}
 	}
 	
@@ -62,11 +157,20 @@ public class Agent {
 	}
 	
 	public void addResource(Resource resource){
-		bag.add(resource);
+		if (resource.getResourceType() == ResourceType.FOOD){
+			foodBag.addresource(resource);
+		} else {
+			waterBag.addresource(resource);
+		}
+		
 	}
 	
-	public void removeResource(Resource resource){
-		bag.remove(resource);
+	public Resource getFoodFromBag(){
+		return foodBag.getResource();
+	}
+	
+	public Resource getWaterFromBag(){
+		return waterBag.getResource();
 	}
 	
 	public boolean isDead() {
@@ -81,10 +185,6 @@ public class Agent {
 		return thirst;
 	}
 
-	public void move(Direction dir) {
-		this.position = new Point(position.x + dir.getX(), position.y + dir.getY());
-	}
-
 	public void removeHunger() {
 		hunger = 1;
 	}
@@ -92,5 +192,5 @@ public class Agent {
 	public void removeThirst() {
 		thirst = 1;
 	}
-	
+
 }

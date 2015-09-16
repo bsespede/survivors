@@ -7,12 +7,11 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.baru.survivor.Survivor;
-import com.baru.survivor.backend.map.TileType;
 
 public class SpriteGenerator {
 
 	private Texture spriteSheet;
-	private Map<TileType, SpriteSelector> spriteGenerator = new HashMap<TileType, SpriteSelector>();
+	private Map<SpriteType, SpriteSelector> spriteGenerator = new HashMap<SpriteType, SpriteSelector>();
 	
 	public void initialize() throws IOException{
 		spriteSheet = new Texture(Gdx.files.internal(Survivor.spriteSheet));
@@ -35,31 +34,31 @@ public class SpriteGenerator {
 		int[][] selection = {{297}};
 		int[][] skull = {{301}};
 		int[][] food = {{153}};
-		spriteGenerator.put(TileType.SELECTION, new SpriteSelector(spriteSheet, selection));
-		spriteGenerator.put(TileType.SKULL, new SpriteSelector(spriteSheet, skull));
-		spriteGenerator.put(TileType.SHADE, new SpriteSelector(spriteSheet, shade));
-		spriteGenerator.put(TileType.VILLAGER, new SpriteSelector(spriteSheet, villagers));
-		spriteGenerator.put(TileType.GRASS, new SpriteSelector(spriteSheet, grass));
-		spriteGenerator.put(TileType.GRASS_DECORATION, new SpriteSelector(spriteSheet, grassDeco));
-		spriteGenerator.put(TileType.TREE, new SpriteSelector(spriteSheet, tree));
-		spriteGenerator.put(TileType.FOREST, new SpriteSelector(spriteSheet, forest));
-		spriteGenerator.put(TileType.MOUNTAIN, new SpriteSelector(spriteSheet, mountains));
-		spriteGenerator.put(TileType.PLATEAU, new SpriteSelector(spriteSheet, plateaus));
-		spriteGenerator.put(TileType.HOUSE, new SpriteSelector(spriteSheet, houses));
-		spriteGenerator.put(TileType.LAKE, new SpriteSelector(spriteSheet, lake));
-		spriteGenerator.put(TileType.TENT, new SpriteSelector(spriteSheet, tents));
-		spriteGenerator.put(TileType.HORSE, new SpriteSelector(spriteSheet, horse));
-		spriteGenerator.put(TileType.WINDMILL, new SpriteSelector(spriteSheet, windmill));
-		spriteGenerator.put(TileType.WATER, new SpriteSelector(spriteSheet, water));
-		spriteGenerator.put(TileType.WATER_DECORATION, new SpriteSelector(spriteSheet, waterDeco));
-		spriteGenerator.put(TileType.FOOD, new SpriteSelector(spriteSheet, food));
+		spriteGenerator.put(SpriteType.SELECTION, new SpriteSelector(spriteSheet, selection));
+		spriteGenerator.put(SpriteType.SKULL, new SpriteSelector(spriteSheet, skull));
+		spriteGenerator.put(SpriteType.SHADE, new SpriteSelector(spriteSheet, shade));
+		spriteGenerator.put(SpriteType.VILLAGER, new SpriteSelector(spriteSheet, villagers));
+		spriteGenerator.put(SpriteType.GRASS, new SpriteSelector(spriteSheet, grass));
+		spriteGenerator.put(SpriteType.GRASS_DECORATION, new SpriteSelector(spriteSheet, grassDeco));
+		spriteGenerator.put(SpriteType.TREE, new SpriteSelector(spriteSheet, tree));
+		spriteGenerator.put(SpriteType.FOREST, new SpriteSelector(spriteSheet, forest));
+		spriteGenerator.put(SpriteType.MOUNTAIN, new SpriteSelector(spriteSheet, mountains));
+		spriteGenerator.put(SpriteType.PLATEAU, new SpriteSelector(spriteSheet, plateaus));
+		spriteGenerator.put(SpriteType.HOUSE, new SpriteSelector(spriteSheet, houses));
+		spriteGenerator.put(SpriteType.LAKE, new SpriteSelector(spriteSheet, lake));
+		spriteGenerator.put(SpriteType.TENT, new SpriteSelector(spriteSheet, tents));
+		spriteGenerator.put(SpriteType.HORSE, new SpriteSelector(spriteSheet, horse));
+		spriteGenerator.put(SpriteType.WINDMILL, new SpriteSelector(spriteSheet, windmill));
+		spriteGenerator.put(SpriteType.WATER, new SpriteSelector(spriteSheet, water));
+		spriteGenerator.put(SpriteType.WATER_DECORATION, new SpriteSelector(spriteSheet, waterDeco));
+		spriteGenerator.put(SpriteType.FOOD, new SpriteSelector(spriteSheet, food));
 	}
 	
-	public SimpleSprite generateRandom(TileType type) {
+	public SimpleSprite generateRandom(SpriteType type) {
 		return spriteGenerator.get(type).getRandom();
 	}
 	
-	public SimpleSprite generateIndex(TileType type, int index) {
+	public SimpleSprite generateIndex(SpriteType type, int index) {
 		return spriteGenerator.get(type).getIndex(index);
 	}
 
