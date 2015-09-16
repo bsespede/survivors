@@ -46,32 +46,39 @@ public class Agent {
 	public void consumeFromBags(){
 		if (kindness > 0.8){
 			if (hunger < 0.2){
-				consumeFromBag(foodBag);
+				consumeFromFoodBag();
 			}
 			if (thirst < 0.2){
-				consumeFromBag(waterBag);
+				consumeFromWaterBag();
 			}
 		}else if (kindness > 0.4){
 			if (hunger < 0.5){
-				consumeFromBag(foodBag);
+				consumeFromFoodBag();
 			}
 			if (thirst < 0.5){
-				consumeFromBag(waterBag);
+				consumeFromWaterBag();
 			}
 		}else{
-			if (hunger < 0.2){
-				consumeFromBag(foodBag);
+			if (hunger < 0.8){
+				consumeFromFoodBag();
 			}
-			if (thirst < 0.2){
-				consumeFromBag(waterBag);
+			if (thirst < 0.8){
+				consumeFromWaterBag();
 			}
 		}
 	}
 	
-	private void consumeFromBag(Bag bag) {
-		Resource resource = bag.getResource();
+	private void consumeFromFoodBag() {
+		Resource resource = foodBag.getResource();
 		if (resource != null){
-			if (resource.type)
+			hunger += 0.2;
+		}
+	}
+	
+	private void consumeFromWaterBag() {
+		Resource resource = waterBag.getResource();
+		if (resource != null){
+			thirst += 0.2;
 		}
 	}
 
