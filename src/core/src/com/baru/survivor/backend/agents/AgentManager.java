@@ -28,9 +28,9 @@ public class AgentManager {
 		agents.add(agent);
 	}
 	
-	public Agent getAgent(int x, int y) {
+	public Agent getAgentAt(Point position) {
 		for (Agent agent: agents) {
-			if (agent.x() == x && agent.y() == y) {
+			if (agent.position().equals(position)) {
 				return agent;
 			}
 		}

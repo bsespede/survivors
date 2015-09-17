@@ -19,16 +19,16 @@ public class TerrainManager {
 		this.autoTiles = autoTiles;
 	}
 	
-	public TileType getTileType(int i, int j) {
-		return tiles[i][j].getType();
+	public TileType getTileType(Point point) {
+		return tiles[point.x][point.y].getType();
 	}
 	
-	public byte getAutoTile(int x, int y){
-		return autoTiles.get(x, y);
+	public byte getAutoTile(Point point){
+		return autoTiles.get(point.x, point.y);
 	}
 	
-	public boolean isBlocked(int x, int y) {
-		return tiles[x][y].isBlocked();
+	public boolean isBlocked(Point point) {
+		return tiles[point.x][point.y].isBlocked();
 	}
 
 	public Point getSpawnablePoint() {

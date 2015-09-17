@@ -18,4 +18,22 @@ public enum Direction {
     public int getY() {
     	return y;
     }
+
+	public static Direction valueOf(int x, int y) {
+		if (x == 0 && y == -1){
+			return NORTH;
+		}else if (x == 1 && y == 0){
+			return EAST;
+		}else if (x == 0 && y == 1){
+			return SOUTH;
+		}else if (x == -1 && y == -1){
+			return NW;
+		}else if (x == 1 && y == -1){
+			return NE;
+		}else if (x == -1 && y == 1){
+			return SW;
+		}else{
+			return SE;
+		}
+	}
 }

@@ -11,5 +11,7 @@ public class TribeManager {
 		villages.add(tribe);
 	}
 	
-	
+	public List<Tribe> getVillages(){
+		return villages;
+	}
 }

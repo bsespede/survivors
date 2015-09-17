@@ -97,14 +97,14 @@ public class Agent {
 			int directionIndex = new Random().nextInt(Direction.values().length);
 			Direction dir = Direction.values()[directionIndex];				
 			Point destPoint = new Point(position.x + dir.getX(), position.y + dir.getY());
-			if (TerrainManager.isValidPoint(destPoint) && !terrainManager.isBlocked(destPoint.x, destPoint.y)) {
+			if (TerrainManager.isValidPoint(destPoint) && !terrainManager.isBlocked(destPoint)) {
 				position = new Point(position.x + dir.getX(), position.y + dir.getY());
 			}
 		}
 	}
 	
 	public void pickUp(ReservoirManager reservoirManager) {
-		Reservoir reservoir = reservoirManager.getReservoir(position.x, position.y);
+		Reservoir reservoir = reservoirManager.getReservoirAt(position);
 		if (reservoir != null) {
 				consumeResourceTillFull(reservoir);
 				fillBagWithResource(reservoir);
@@ -151,12 +151,8 @@ public class Agent {
 		}
 	}
 	
-	public int x() {
-		return position.x;
-	}
-	
-	public int y() {
-		return position.y;
+	public Point position(){
+		return position;
 	}
 	
 	public float getKindness(){

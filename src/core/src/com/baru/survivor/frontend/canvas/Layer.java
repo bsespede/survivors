@@ -1,5 +1,7 @@
 package com.baru.survivor.frontend.canvas;
 
+import java.awt.Point;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.baru.survivor.Survivor;
@@ -14,26 +16,26 @@ public class Layer {
 		tiles = new SimpleSprite[Survivor.width][Survivor.height];
 	}
 	
-	public void setSprite(SimpleSprite newTile, int x, int y){
-		tiles[x][y] = newTile;
+	public void setSprite(SimpleSprite newTile, Point point){
+		tiles[point.x][point.y] = newTile;
 	}
 	
-	public SimpleSprite getSprite(int x, int y) {
-		return tiles[x][y];
+	public SimpleSprite getSprite(Point point) {
+		return tiles[point.x][point.y];
 	}
 
 	public void draw(SpriteBatch batch) {
-		for(int i = 0; i < Survivor.width; i++){
-			for (int j = 0; j < Survivor.height; j++){
-				if (tiles[i][j] != null){
-					if (tiles[i][j] instanceof AnimatedSprite){
-						batch.draw(((AnimatedSprite)tiles[i][j]).getTextureRegion(), 
-							i * Survivor.tileSize,
-							Gdx.graphics.getHeight() -(j+1) * Survivor.tileSize);
+		for(int x = 0; x < Survivor.width; x++){
+			for (int y = 0; y < Survivor.height; y++){
+				if (tiles[x][y] != null){
+					if (tiles[x][y] instanceof AnimatedSprite){
+						batch.draw(((AnimatedSprite)tiles[x][y]).getTextureRegion(), 
+							x * Survivor.tileSize,
+							Gdx.graphics.getHeight() -(y+1) * Survivor.tileSize);
 					} else {
-						batch.draw(tiles[i][j].getTextureRegion(), 
-								i * Survivor.tileSize,
-								Gdx.graphics.getHeight() - (j+1) * Survivor.tileSize);
+						batch.draw(tiles[x][y].getTextureRegion(), 
+								x * Survivor.tileSize,
+								Gdx.graphics.getHeight() - (y+1) * Survivor.tileSize);
 					}
 				}
 			}

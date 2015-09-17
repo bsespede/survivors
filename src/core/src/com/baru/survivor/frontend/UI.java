@@ -1,5 +1,7 @@
 package com.baru.survivor.frontend;
 
+import java.awt.Point;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -29,7 +31,7 @@ public class UI {
 	public void create(Status status) {
 
 		grid = new Grid();		
-		grid.fillTerrainLayers(status.getTerrainManager());
+		grid.fillTerrainLayers(status.getTerrainManager(), status.getTribeManager());
 		grid.fillAgentVisuals(status.getAgentsManager());
 		
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
@@ -59,7 +61,8 @@ public class UI {
 		grid.draw(batch);
 		for (int x = 0; x < Survivor.width; x++) {
 			for (int y = 0; y < Survivor.height; y++) {
-				Agent agent = status.getAgentsManager().getAgent(x, y);
+				Point position = new Point(x, y);
+				Agent agent = status.getAgentsManager().getAgentAt(position);
 				if (agent != null) {
 					drawAgentName(agent, x, y);
 					drawAgentBars(agent, x, y);

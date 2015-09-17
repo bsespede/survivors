@@ -15,11 +15,10 @@ public class ReservoirManager {
 	public void generateWater(Point spawnablePoint, long curTime, int amount) {
 		reservoirs.put(spawnablePoint, new Reservoir(ResourceType.WATER, amount));
 	}
-	
-	public Reservoir getReservoir(int x, int y) {
-		Point reservoirPoint = new Point(x,y);
-		if (reservoirs.containsKey(reservoirPoint)){
-			return reservoirs.get(reservoirPoint);
+
+	public Reservoir getReservoirAt(Point position) {
+		if (reservoirs.containsKey(position)){
+			return reservoirs.get(position);
 		} else {
 			return null;
 		}

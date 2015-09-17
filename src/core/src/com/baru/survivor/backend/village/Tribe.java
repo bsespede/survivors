@@ -15,14 +15,6 @@ public class Tribe {
 	public Tribe(Point villageLocation) {
 		this.villageLocation = villageLocation;
 	}
-
-	public int getVillageX(){
-		return villageLocation.x;
-	}
-	
-	public int getVillageY(){
-		return villageLocation.y;
-	}
 	
 	public void addMember(Agent agent) {
 		members.add(agent);
@@ -40,5 +32,9 @@ public class Tribe {
 	
 	public boolean insideVillage(Agent agent) {
 		return insideVillage.contains(agent);
+	}
+
+	public Point position() {
+		return villageLocation;
 	}
 }

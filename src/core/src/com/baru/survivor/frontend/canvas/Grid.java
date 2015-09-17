@@ -1,5 +1,6 @@
 package com.baru.survivor.frontend.canvas;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,8 @@ import com.baru.survivor.backend.map.TileType;
 import com.baru.survivor.backend.resources.Reservoir;
 import com.baru.survivor.backend.resources.ReservoirManager;
 import com.baru.survivor.backend.resources.ResourceType;
+import com.baru.survivor.backend.village.Tribe;
+import com.baru.survivor.backend.village.TribeManager;
 import com.baru.survivor.frontend.sprite.SimpleSprite;
 import com.baru.survivor.frontend.sprite.SpriteGenerator;
 import com.baru.survivor.frontend.sprite.SpriteType;
@@ -32,11 +35,11 @@ public class Grid {
 		}
 	}
 	
-	public SimpleSprite getSprite(int x, int y, int layer) {
-		return layers.get(layer).getSprite(x, y);
+	public SimpleSprite getSprite(Point position, int layer) {
+		return layers.get(layer).getSprite(position);
 	}
 
-	public void fillTerrainLayers(TerrainManager map) {
+	public void fillTerrainLayers(TerrainManager map, TribeManager tribes) {
 		Random rand = new Random();
 		try {
 			spriteGenerator.initialize();
@@ -49,53 +52,60 @@ public class Grid {
 		Layer decoLayer = layers.get(3);
 		
 		boolean shouldShade = true;
-		for (int i = 0; i < Survivor.width; i++) {
-			for (int j = 0; j < Survivor.height; j++) {
+		for (int x = 0; x < Survivor.width; x++) {
+			for (int y = 0; y < Survivor.height; y++) {
+				Point position = new Point(x, y);
 				if (shouldShade){
-					shadeLayer.setSprite(spriteGenerator.generateIndex(SpriteType.SHADE, 0), i, j);
+					shadeLayer.setSprite(spriteGenerator.generateIndex(SpriteType.SHADE, 0), position);
 					shouldShade = false;
 				} else {
 					shouldShade = true;
 				}
-				if (map.getTileType(i, j) == TileType.WATER){
-					waterLayer.setSprite(spriteGenerator.generateIndex(SpriteType.WATER, 0), i, j);
-					if (map.getTileType(i, j) == TileType.WATER && rand.nextFloat() < 0.005f){
-						decoLayer.setSprite(spriteGenerator.generateRandom(SpriteType.WATER_DECORATION), i, j);
+				if (map.getTileType(position) == TileType.WATER){
+					waterLayer.setSprite(spriteGenerator.generateIndex(SpriteType.WATER, 0), position);
+					if (map.getTileType(position) == TileType.WATER && rand.nextFloat() < 0.005f){
+						decoLayer.setSprite(spriteGenerator.generateRandom(SpriteType.WATER_DECORATION), position);
 					}
 				}
-				if (map.getTileType(i, j) == TileType.COAST) {
-					waterLayer.setSprite(spriteGenerator.generateIndex(SpriteType.WATER, 0), i, j);
-					landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, map.getAutoTile(i, j)), i, j);
+				if (map.getTileType(position) == TileType.COAST) {
+					waterLayer.setSprite(spriteGenerator.generateIndex(SpriteType.WATER, 0), position);
+					landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, map.getAutoTile(position)), position);
 				}
-				if (map.getTileType(i, j) == TileType.GRASS) {
+				if (map.getTileType(position) == TileType.GRASS) {
 					if (rand.nextFloat() < 0.1f){
-						landLayer.setSprite(spriteGenerator.generateRandom(SpriteType.GRASS_DECORATION), i, j);
+						landLayer.setSprite(spriteGenerator.generateRandom(SpriteType.GRASS_DECORATION), position);
 					} else {
-						landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, 0), i, j);
+						landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, 0), position);
 					}	
 				}
-				if (map.getTileType(i, j) == TileType.FOREST){
-					decoLayer.setSprite(spriteGenerator.generateIndex(SpriteType.FOREST, 0), i, j);
-					landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, 0), i, j);
+				if (map.getTileType(position) == TileType.FOREST){
+					decoLayer.setSprite(spriteGenerator.generateIndex(SpriteType.FOREST, 0), position);
+					landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, 0), position);
 				}
-				if (map.getTileType(i, j) == TileType.TREE){
-					decoLayer.setSprite(spriteGenerator.generateRandom(SpriteType.TREE), i, j);
-					landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, 0), i, j);
+				if (map.getTileType(position) == TileType.TREE){
+					decoLayer.setSprite(spriteGenerator.generateRandom(SpriteType.TREE), position);
+					landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, 0), position);
 				}
-				if (map.getTileType(i, j) == TileType.MOUNTAIN){
-					decoLayer.setSprite(spriteGenerator.generateRandom(SpriteType.MOUNTAIN), i, j);
-					landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, 0), i, j);
+				if (map.getTileType(position) == TileType.MOUNTAIN){
+					decoLayer.setSprite(spriteGenerator.generateRandom(SpriteType.MOUNTAIN), position);
+					landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, 0), position);
 				}
-				if (map.getTileType(i, j) == TileType.PLATEAU){
-					decoLayer.setSprite(spriteGenerator.generateRandom(SpriteType.PLATEAU), i, j);
-					landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, 0), i, j);
+				if (map.getTileType(position) == TileType.PLATEAU){
+					decoLayer.setSprite(spriteGenerator.generateRandom(SpriteType.PLATEAU), position);
+					landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, 0), position);
 				}
-				if (map.getTileType(i, j) == TileType.HOUSE){
-					decoLayer.setSprite(spriteGenerator.generateRandom(SpriteType.HOUSE), i, j);
-					landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, 0), i, j);
+				if (map.getTileType(position) == TileType.HOUSE){
+					decoLayer.setSprite(spriteGenerator.generateRandom(SpriteType.HOUSE), position);
+					landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, 0), position);
 				}
-			}
-		}		
+			}			
+		}	
+		List<Tribe> villages = tribes.getVillages();
+		for(int i = 0; i < villages.size(); i++){
+			Tribe curTribe = villages.get(i);
+			decoLayer.setSprite(spriteGenerator.generateRandom(SpriteType.HOUSE), curTribe.position());
+			landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, 0), curTribe.position());
+		}
 	}
 	
 	public void fillAgentVisuals(AgentManager agentManager) {
@@ -109,14 +119,15 @@ public class Grid {
 		Layer resourceLayer = new Layer();
 		for (int x = 0; x < Survivor.width; x++) {
 			for (int y = 0; y < Survivor.height; y++) {
-				Agent agent = agentManager.getAgent(x, y);
+				Point position = new Point(x, y);
+				Agent agent = agentManager.getAgentAt(position);
 				if (agent != null) {
 					if (agent.isDead()) {
 						agentVisuals.put(agent, spriteGenerator.generateRandom(SpriteType.SKULL));
 					}
-					agentLayer.setSprite(agentVisuals.get(agent), x, y);
+					agentLayer.setSprite(agentVisuals.get(agent), position);
 				}
-				Reservoir reservoir = reservoirManager.getReservoir(x, y);
+				Reservoir reservoir = reservoirManager.getReservoirAt(position);
 				if (reservoir != null && reservoir.hasResource()) {
 					SpriteType reservoirType;
 					if (reservoir.type() == ResourceType.FOOD){
@@ -124,7 +135,7 @@ public class Grid {
 					}else{
 						reservoirType = SpriteType.LAKE;
 					}
-					resourceLayer.setSprite(spriteGenerator.generateIndex(reservoirType, 0), x, y);
+					resourceLayer.setSprite(spriteGenerator.generateIndex(reservoirType, 0), position);
 				}
 			}							
 		}

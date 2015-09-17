@@ -70,5 +70,9 @@ public class Status {
 	public ReservoirManager getResourceManager() {
 		return resourceManager;
 	}
+
+	public TribeManager getTribeManager() {
+		return tribeManager;
+	}
 	
 }
