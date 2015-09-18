@@ -5,8 +5,10 @@ import java.awt.Point;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -14,12 +16,14 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.baru.survivor.Survivor;
 import com.baru.survivor.backend.Status;
 import com.baru.survivor.backend.agents.Agent;
+import com.baru.survivor.backend.agents.DayCycle;
 import com.baru.survivor.frontend.canvas.Grid;
 
 public class UI {
 
 	private SpriteBatch batch;
 	private Grid grid;
+	private Sprite night;
 
 	private BitmapFont font;
 
@@ -47,6 +51,13 @@ public class UI {
 		barBg = new TextureRegion(text, 32, 896, 32, 10);
 		barHg = new TextureRegion(text, 0, 896, 32, 5);
 		barTh = new TextureRegion(text, 0, 901, 32, 5);
+		
+		
+		Pixmap nightPm = new Pixmap(Survivor.width * Survivor.tileSize, Survivor.height * Survivor.tileSize, Pixmap.Format.RGBA8888);
+		nightPm.setColor(0.3f, 0.25f, 0.34f, 1.0f);
+		nightPm.fill();
+		//night.fillRectangle(0, 0, Survivor.width * Survivor.tileSize, Survivor.height * Survivor.tileSize);
+		night = new Sprite(new Texture(nightPm));
 
 		batch = new SpriteBatch();
 	}
@@ -59,6 +70,10 @@ public class UI {
 		batch.begin();
 		grid.updateLayer(status.getAgentsManager(), status.getResourceManager());
 		grid.draw(batch);
+		if (status.getCycle() == DayCycle.NIGHT){
+			night.draw(batch, 0.5f);			
+		}else{
+		}
 		for (int x = 0; x < Survivor.width; x++) {
 			for (int y = 0; y < Survivor.height; y++) {
 				Point position = new Point(x, y);
@@ -69,6 +84,7 @@ public class UI {
 				}
 			}			
 		}
+		
 		batch.end();
 	}
 

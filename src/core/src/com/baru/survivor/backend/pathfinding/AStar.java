@@ -32,14 +32,11 @@ public class AStar {
 					continue;
 				}
 				DirectionNode neighbourNode = nodeInQueue(neighbourPoint, open);
-				if (neighbourNode == null){
+				if (neighbourNode == null || curNode.g + 1 < neighbourNode.g){
 					DirectionNode candidate = new DirectionNode(curNode, neighbourPoint);
 					candidate.g = curNode.g + 1;
 					candidate.f = candidate.g + eulerDist(neighbourPoint, to);
 					open.add(candidate);
-				}else if (curNode.g + 1 < neighbourNode.g){
-					neighbourNode.g = curNode.g + 1;
-					neighbourNode.f = neighbourNode.g + eulerDist(neighbourPoint, to);
 				}
 			}
 		}		
@@ -56,7 +53,7 @@ public class AStar {
 	}
 
 	private double eulerDist(Point from, Point to){
-		return Math.abs(to.x - from.x) + Math.abs(to.x - from.x);		
+		return Math.sqrt(Math.pow(to.x - from.x, 2)+Math.pow(to.y - from.y, 2));
 	}
 	
 	private DirectionNode nodeInQueue(Point point, Queue<DirectionNode> queue){
@@ -84,8 +81,9 @@ public class AStar {
 			List<Point> neighbours = new ArrayList<Point>();
 			for (int x = -1; x < 2; x++){
 				for (int y = -1; y < 2; y++){
-					if (x != 0 && y != 0){
-						neighbours.add(new Point(point.x+x, point.y+y));
+					Point neighbourPoint = new Point(point.x+x, point.y+y);
+					if (!neighbourPoint.equals(new Point(0, 0))){
+						neighbours.add(neighbourPoint);
 					}
 				}
 			}

@@ -50,6 +50,10 @@ public class Status {
 		return terrainManager;
 	}
 	
+	public DayCycle getCycle(){
+		return cycle;
+	}
+	
 	private void generateTribes(int tribesNum, int villagersPerTribe) {
 		for (int i = 0; i < tribesNum; i++) {
 			Tribe tribe = new Tribe(terrainManager.getSpawnablePoint());

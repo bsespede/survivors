@@ -14,6 +14,8 @@ public class Survivor extends ApplicationAdapter {
 	public static final String spriteSheet = "spriteSheet-big.png";
 	public static final int dayTicks = (1000/Survivor.tickTime) * Survivor.secondsPerDay;
 	
+	
+	
 	Status status;
 	UI ui;
 	
