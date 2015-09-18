@@ -40,7 +40,7 @@ public class UI {
 		
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.size = 8;
+		parameter.size = 6;
 		parameter.color = Color.WHITE;
 		parameter.borderColor = Color.BLACK;
 		parameter.borderWidth = 1;
@@ -99,7 +99,7 @@ public class UI {
 	}
 
 	private void drawAgentName(Agent agent, int x, int y) {
-		font.draw(batch, agent.name(), x * Survivor.tileSize - 12,
+		font.draw(batch, agent.name()+"("+agent.foodStg()+"/"+agent.waterStg()+")", x * Survivor.tileSize - 20,
 				Gdx.graphics.getHeight() - ((y+1) * Survivor.tileSize) + 36);
 	}
 

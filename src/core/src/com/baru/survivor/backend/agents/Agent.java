@@ -230,13 +230,23 @@ public class Agent {
 	}
 
 	public void goTo(TerrainManager terrain, Point destination) {
-		moving = true;
-		path = (new AStar()).getPath(position, destination, terrain);
-		System.out.println(name+" "+path);
-		if (path == null){
-			moving = false;
-			return;
-		}
+		if (!isDead()){
+			moving = true;
+			path = (new AStar()).getPath(position, destination, terrain);
+			System.out.println(name+" "+path);
+			if (path == null){
+				moving = false;
+				return;
+			}
+		}		
+	}
+
+	public String foodStg() {
+		return ((Integer)foodBag.usedSlots()).toString();
+	}
+	
+	public String waterStg() {
+		return ((Integer)waterBag.usedSlots()).toString();
 	}
 
 }

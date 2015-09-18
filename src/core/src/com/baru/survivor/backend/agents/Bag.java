@@ -27,4 +27,8 @@ public class Bag {
 			return null;
 		}
 	}
+
+	public int usedSlots() {
+		return bag.size();
+	}
 }
