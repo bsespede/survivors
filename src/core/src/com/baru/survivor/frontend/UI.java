@@ -40,7 +40,7 @@ public class UI {
 		
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.size = 6;
+		parameter.size = 7;
 		parameter.color = Color.WHITE;
 		parameter.borderColor = Color.BLACK;
 		parameter.borderWidth = 1;

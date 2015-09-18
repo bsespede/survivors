@@ -18,20 +18,19 @@ public class AgentManager {
 	public void tickTime(TerrainManager terrainManager, ReservoirManager resourceManager, DayCycle cycle) {
 		for (Agent agent: agents){
 			agent.addHungerThirst();
-			if (cycle == DayCycle.DAY){
-				agent.explore(terrainManager);			
+			if (agent.isMoving()){
+				agent.continueMoving(terrainManager);
+			}else if (cycle == DayCycle.DAY){
+				agent.explore(terrainManager, resourceManager);
 			}else{
-				if (agent.isMoving()){
-					agent.continueMoving(terrainManager);
-				}else{
-					if (agent.position().equals(tribes.get(agent).position())){
+				if (agent.position().equals(tribes.get(agent).position())){
 						
-					}else{
-						agent.goTo(terrainManager, tribes.get(agent).position());						
-					}
-				}
+				}else{
+					agent.goTo(terrainManager, tribes.get(agent).position());						
+				}	
 			}
 			agent.pickUp(resourceManager);
+			agent.consumeFromBags();
 		}
 	}
 	

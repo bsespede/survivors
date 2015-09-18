@@ -21,6 +21,7 @@ public class Agent {
 	private boolean moving;
 	private float hunger;
 	private float thirst;
+	private int visionRange;
 	private float kindness;
 	private Bag foodBag;
 	private Bag waterBag;
@@ -33,6 +34,7 @@ public class Agent {
 		this.waterBag = new Bag();
 		this.hunger = 1;
 		this.thirst = 1;	
+		this.visionRange = 3;
 		this.position = position;
 		NameGenerator ng;
 		try {
@@ -96,12 +98,34 @@ public class Agent {
 		}
 	}
 
-	public void explore(TerrainManager terrainManager) {
-		int directionIndex = new Random().nextInt(Direction.values().length);
-		Direction dir = Direction.values()[directionIndex];				
-		move(terrainManager, dir);
+	public void explore(TerrainManager terrainManager, ReservoirManager reservoirManager) {
+		Point reservoirLocation = reservoirNearby(reservoirManager);
+		if (reservoirLocation != null && reservoirManager.getReservoirAt(reservoirLocation).hasResource()){
+			goTo(terrainManager, reservoirLocation);
+		}else{
+			int directionIndex = new Random().nextInt(Direction.values().length);
+			Direction dir = Direction.values()[directionIndex];				
+			move(terrainManager, dir);
+		}			
 	}
 	
+	private Point reservoirNearby(ReservoirManager reservoirManager) {
+		for (int x = (-1)*visionRange; x < visionRange+1; x++){
+			for (int y = (-1)*visionRange; y < visionRange+1; y++){
+				Point point = new Point(x + position.x, y + position.y);
+				Reservoir reservoir = reservoirManager.getReservoirAt(point);
+				if (reservoir != null){
+					if (reservoir.type() == ResourceType.FOOD && hunger < 0.8){
+						return point;
+					}else if (reservoir.type() == ResourceType.WATER && thirst < 0.8){
+						return point;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
 	public boolean move(TerrainManager terrainManager, Direction dir) {
 		if (!isDead()) {	
 			Point destPoint = new Point(position.x + dir.getX(), position.y + dir.getY());

@@ -23,7 +23,7 @@ public class Survivor extends ApplicationAdapter {
 	public void create() {
 		status = new Status();
 		ui = new UI();
-		status.create(1, 5, 5, 10, 5, 10);
+		status.create(2, 2, 5, 10, 5, 10);
 		ui.create(status);
 	}
 
