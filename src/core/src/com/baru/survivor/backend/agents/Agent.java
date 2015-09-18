@@ -209,7 +209,7 @@ public class Agent {
 		thirst = 1;
 	}
 
-	public boolean moving() {
+	public boolean isMoving() {
 		return moving;
 	}
 
@@ -232,7 +232,7 @@ public class Agent {
 	public void goTo(TerrainManager terrain, Point destination) {
 		moving = true;
 		path = (new AStar()).getPath(position, destination, terrain);
-		System.out.println("PATH: "+path);
+		System.out.println(name+" "+path);
 		if (path == null){
 			moving = false;
 			return;

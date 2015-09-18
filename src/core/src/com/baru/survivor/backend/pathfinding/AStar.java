@@ -56,7 +56,7 @@ public class AStar {
 	}
 
 	private double eulerDist(Point from, Point to){
-		return Math.sqrt(Math.pow(to.x - from.x, 2)+Math.pow(to.x - from.x, 2));		
+		return Math.abs(to.x - from.x) + Math.abs(to.x - from.x);		
 	}
 	
 	private DirectionNode nodeInQueue(Point point, Queue<DirectionNode> queue){

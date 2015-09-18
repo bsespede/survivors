@@ -2,6 +2,7 @@ package com.baru.survivor.backend;
 
 import com.baru.survivor.Survivor;
 import com.baru.survivor.backend.agents.AgentManager;
+import com.baru.survivor.backend.agents.DayCycle;
 import com.baru.survivor.backend.map.TerrainGenerator;
 import com.baru.survivor.backend.map.TerrainManager;
 import com.baru.survivor.backend.resources.ReservoirManager;
@@ -15,18 +16,20 @@ public class Status {
 	private ReservoirManager resourceManager = new ReservoirManager();
 	private TribeManager tribeManager = new TribeManager();
 	private long lastTick = System.currentTimeMillis();
+	private DayCycle cycle = DayCycle.DAY;
 	private int tickCounter = 0;
 
 	public void nextState(long curTime){
 		long elapsedTime = curTime - lastTick;
-		
 		if (elapsedTime > Survivor.tickTime) {
-			boolean callHome = false;
-			if (tickCounter >= (1000/Survivor.tickTime) * Survivor.secondsPerDay){
-				tickCounter = 0;
-				callHome = true;
+			if (tickCounter >= Survivor.dayTicks * 0.75){
+				cycle = DayCycle.NIGHT;
+				if (tickCounter > Survivor.dayTicks){
+					cycle = DayCycle.DAY;
+					tickCounter = 0;
+				}
 			}
-			agentManager.tickTime(terrainManager, resourceManager, callHome);
+			agentManager.tickTime(terrainManager, resourceManager, cycle);
 			lastTick = curTime;	
 			tickCounter++;
 		}
