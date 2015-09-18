@@ -2,25 +2,29 @@ package com.baru.survivor.backend.agents;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.util.Deque;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.baru.survivor.Survivor;
 import com.baru.survivor.backend.map.TerrainManager;
+import com.baru.survivor.backend.pathfinding.AStar;
 import com.baru.survivor.backend.resources.Reservoir;
-import com.baru.survivor.backend.resources.Resource;
 import com.baru.survivor.backend.resources.ReservoirManager;
+import com.baru.survivor.backend.resources.Resource;
 import com.baru.survivor.backend.resources.ResourceType;
 
 public class Agent {
 
 	private String name;
 	private Point position;
+	private boolean moving;
 	private float hunger;
 	private float thirst;
 	private float kindness;
 	private Bag foodBag;
 	private Bag waterBag;
+	private Deque<Point> path;
 	
 	public Agent(Point position){
 		Random rand = new Random();
@@ -92,14 +96,23 @@ public class Agent {
 		}
 	}
 
-	public void move(TerrainManager terrainManager) {
-		if (!isDead()) {
-			int directionIndex = new Random().nextInt(Direction.values().length);
-			Direction dir = Direction.values()[directionIndex];				
+	public void explore(TerrainManager terrainManager) {
+		int directionIndex = new Random().nextInt(Direction.values().length);
+		Direction dir = Direction.values()[directionIndex];				
+		move(terrainManager, dir);
+	}
+	
+	public boolean move(TerrainManager terrainManager, Direction dir) {
+		if (!isDead()) {	
 			Point destPoint = new Point(position.x + dir.getX(), position.y + dir.getY());
 			if (TerrainManager.isValidPoint(destPoint) && !terrainManager.isBlocked(destPoint)) {
 				position = new Point(position.x + dir.getX(), position.y + dir.getY());
+				return true;
+			}else{
+				return false;
 			}
+		}else{
+			return false;			
 		}
 	}
 	
@@ -194,6 +207,36 @@ public class Agent {
 
 	public void removeThirst() {
 		thirst = 1;
+	}
+
+	public boolean moving() {
+		return moving;
+	}
+
+	public void continueMoving(TerrainManager terrain) {
+		if (moving){
+			if (!path.isEmpty()){
+				Point nextPoint = path.peek();
+				if (terrain.isBlocked(nextPoint)){
+					Point destination = path.peekLast();
+					path = (new AStar()).getPath(position, destination, terrain);
+				}else{
+					position = path.pop();					
+				}
+			} else {
+				moving = false;
+			}
+		}
+	}
+
+	public void goTo(TerrainManager terrain, Point destination) {
+		moving = true;
+		path = (new AStar()).getPath(position, destination, terrain);
+		System.out.println("PATH: "+path);
+		if (path == null){
+			moving = false;
+			return;
+		}
 	}
 
 }

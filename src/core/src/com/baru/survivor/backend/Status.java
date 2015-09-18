@@ -15,12 +15,20 @@ public class Status {
 	private ReservoirManager resourceManager = new ReservoirManager();
 	private TribeManager tribeManager = new TribeManager();
 	private long lastTick = System.currentTimeMillis();
+	private int tickCounter = 0;
 
 	public void nextState(long curTime){
 		long elapsedTime = curTime - lastTick;
+		
 		if (elapsedTime > Survivor.tickTime) {
-			agentManager.tickTime(terrainManager, resourceManager);
-			lastTick = curTime;			
+			boolean callHome = false;
+			if (tickCounter >= (1000/Survivor.tickTime) * Survivor.secondsPerDay){
+				tickCounter = 0;
+				callHome = true;
+			}
+			agentManager.tickTime(terrainManager, resourceManager, callHome);
+			lastTick = curTime;	
+			tickCounter++;
 		}
 	}
 	
@@ -44,7 +52,7 @@ public class Status {
 			Tribe tribe = new Tribe(terrainManager.getSpawnablePoint());
 			tribeManager.addTribe(tribe);
 			for (int j = 0; j < villagersPerTribe; j++) {
-				agentManager.generateAgent(terrainManager.getSpawnablePoint());
+				agentManager.generateAgent(terrainManager.getSpawnablePoint(), tribe);
 			}
 		}		
 	}

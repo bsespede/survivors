@@ -1,7 +1,8 @@
-package com.baru.survivor.backend.pathtracing;
+package com.baru.survivor.backend.pathfinding;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -11,8 +12,8 @@ import com.baru.survivor.backend.map.TerrainManager;
 
 public class AStar {
 
-	public List<Point> getPath(Point from, Point to, TerrainManager terrain){
-		List<Point> path = new LinkedList<Point>();
+	public Deque<Point> getPath(Point from, Point to, TerrainManager terrain){
+		Deque<Point> path = new LinkedList<Point>();
 		Queue<DirectionNode> closed = new PriorityQueue<DirectionNode>();
 		Queue<DirectionNode> open = new PriorityQueue<DirectionNode>();
 		DirectionNode firstNode = new DirectionNode(null, from);
@@ -41,16 +42,15 @@ public class AStar {
 					neighbourNode.f = neighbourNode.g + eulerDist(neighbourPoint, to);
 				}
 			}
-		}
-		
+		}		
 		
 		return null;
 		
 	}
 
-	private void makePath(DirectionNode curNode, List<Point> path) {
+	private void makePath(DirectionNode curNode, Deque<Point> path) {
 		if (curNode != null){
-			path.add(0, curNode.point);
+			path.push(curNode.point);
 			makePath(curNode.parent, path);
 		}
 	}
@@ -71,8 +71,8 @@ public class AStar {
 	private class DirectionNode implements Comparable<DirectionNode>{
 
 		private DirectionNode parent;
-		private Double f;
-		private Double g;
+		private double f;
+		private double g;
 		private Point point;
 		
 		public DirectionNode(DirectionNode parent, Point point){
@@ -82,11 +82,18 @@ public class AStar {
 		
 		public List<Point> getNeighbours() {
 			List<Point> neighbours = new ArrayList<Point>();
+			for (int x = -1; x < 2; x++){
+				for (int y = -1; y < 2; y++){
+					if (x != 0 && y != 0){
+						neighbours.add(new Point(point.x+x, point.y+y));
+					}
+				}
+			}
 			return neighbours;
 		}
 		
 		public int compareTo(DirectionNode other) {
-			return f.compareTo(other.f);
+			return ((Double)f).compareTo(other.f);
 		}
 
 	}
