@@ -30,11 +30,11 @@ public class Agent {
 	public Agent(Point position){
 		Random rand = new Random();
 		this.kindness = rand.nextFloat();
-		this.foodBag = new Bag();
-		this.waterBag = new Bag();
-		this.hunger = 1;
+		this.foodBag = new Bag(Survivor.agentSlots);
+		this.waterBag = new Bag(Survivor.agentSlots);
+		this.hunger = 0.2f;
 		this.thirst = 1;	
-		this.visionRange = 3;
+		this.visionRange = 2;
 		this.position = position;
 		NameGenerator ng;
 		try {
@@ -115,9 +115,9 @@ public class Agent {
 				Point point = new Point(x + position.x, y + position.y);
 				Reservoir reservoir = reservoirManager.getReservoirAt(point);
 				if (reservoir != null){
-					if (reservoir.type() == ResourceType.FOOD && hunger < 0.8){
+					if (reservoir.type() == ResourceType.FOOD && (hunger < 0.8 || !getSameTypeBag(reservoir).isFull())){
 						return point;
-					}else if (reservoir.type() == ResourceType.WATER && thirst < 0.8){
+					}else if (reservoir.type() == ResourceType.WATER && (thirst < 0.8|| !getSameTypeBag(reservoir).isFull())){
 						return point;
 					}
 				}
@@ -257,7 +257,6 @@ public class Agent {
 		if (!isDead()){
 			moving = true;
 			path = (new AStar()).getPath(position, destination, terrain);
-			System.out.println(name+" "+path);
 			if (path == null){
 				moving = false;
 				return;

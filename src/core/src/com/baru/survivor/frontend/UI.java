@@ -40,7 +40,7 @@ public class UI {
 		
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		parameter.size = 7;
+		parameter.size = 10;
 		parameter.color = Color.WHITE;
 		parameter.borderColor = Color.BLACK;
 		parameter.borderWidth = 1;
@@ -56,7 +56,6 @@ public class UI {
 		Pixmap nightPm = new Pixmap(Survivor.width * Survivor.tileSize, Survivor.height * Survivor.tileSize, Pixmap.Format.RGBA8888);
 		nightPm.setColor(0.3f, 0.25f, 0.34f, 1.0f);
 		nightPm.fill();
-		//night.fillRectangle(0, 0, Survivor.width * Survivor.tileSize, Survivor.height * Survivor.tileSize);
 		night = new Sprite(new Texture(nightPm));
 
 		batch = new SpriteBatch();

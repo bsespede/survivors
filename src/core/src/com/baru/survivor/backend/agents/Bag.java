@@ -10,6 +10,10 @@ public class Bag {
 	private List<Resource> bag = new ArrayList<Resource>();
 	private int maxSlots = 3;
 	
+	public Bag(int maxSlots){
+		this.maxSlots = maxSlots;
+	}
+	
 	public void addresource(Resource resource){
 		if (bag.size() < maxSlots){
 			bag.add(resource);			
@@ -30,5 +34,9 @@ public class Bag {
 
 	public int usedSlots() {
 		return bag.size();
+	}
+	
+	public boolean isFull(){
+		return bag.size() == maxSlots;
 	}
 }
