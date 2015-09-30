@@ -1,7 +1,9 @@
 package com.baru.survivor.backend.resources;
 
+import java.io.Serializable;
 
-public class Resource {
+
+public class Resource implements Serializable{
 
 	private ResourceType resourceType;
 	

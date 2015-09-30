@@ -1,8 +1,11 @@
 package com.baru.survivor;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.baru.survivor.backend.Status;
-import com.baru.survivor.frontend.UI;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.baru.survivor.backend.State;
+import com.baru.survivor.frontend.GameUI;
+import com.baru.survivor.frontend.MenuUI;
 
 public class Survivor extends ApplicationAdapter {
 	
@@ -16,25 +19,61 @@ public class Survivor extends ApplicationAdapter {
 	public static final int agentSlots = 3;
 	public static final int villageSlots = 15;	
 	
-	Status status;
-	UI ui;
+	private static State state;
+	private Status status = Status.RUN;
+	private static int inMenu = 1;
+	private GameUI ui;
+	private MenuUI menuUi;
 	
 	@Override
 	public void create() {
-		status = new Status();
-		ui = new UI();
-		status.create(2, 2, 50, 5, 50, 5);
-		ui.create(status);
+		menuUi = new MenuUI();
+		menuUi.create();	
 	}
 
 	public void dispose(){
-		
-		ui.dispose();
+		if (ui != null){
+			ui.dispose();			
+		}
+		menuUi.dispose();
 	}
 	
 	@Override
 	public void render() {
-		status.nextState(System.currentTimeMillis());
-		ui.render(status);
+		if (inMenu == 0){
+			ui = new GameUI();
+			ui.create(state);
+			inMenu--;
+		}else if (inMenu == 1){
+			menuUi.render();
+		}else{
+			if(Gdx.input.isKeyPressed(Input.Keys.F1)){
+	            status = Status.RUN;
+	        }else if(Gdx.input.isKeyPressed(Input.Keys.F2)){
+	            status = Status.STEP;
+	        }else if(Gdx.input.isKeyPressed(Input.Keys.F3)){
+	        	status = Status.PAUSE;
+	        }
+			if (status != Status.PAUSE){
+				state.nextState(System.currentTimeMillis());
+				ui.render(state);
+				if (status == Status.STEP){
+					status = Status.PAUSE;
+				}
+			}	
+		}			
+	}
+	
+
+	private enum Status{
+		PAUSE,
+		STEP,
+		RUN
+	}
+
+
+	public static void setState(State state) {
+		Survivor.state = state;
+		Survivor.inMenu = 0;
 	}
 }

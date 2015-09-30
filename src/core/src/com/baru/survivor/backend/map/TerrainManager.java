@@ -1,11 +1,12 @@
 package com.baru.survivor.backend.map;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.Random;
 
 import com.baru.survivor.Survivor;
 
-public class TerrainManager {
+public class TerrainManager implements Serializable{
 
 	private Tile[][] tiles;
 	private AutoTile autoTiles;

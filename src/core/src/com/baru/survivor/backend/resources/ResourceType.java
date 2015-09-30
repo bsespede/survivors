@@ -1,6 +1,8 @@
 package com.baru.survivor.backend.resources;
 
-public enum ResourceType {
+import java.io.Serializable;
+
+public enum ResourceType implements Serializable{
 	FOOD,
 	WATER
 }

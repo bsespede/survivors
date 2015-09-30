@@ -1,6 +1,7 @@
 package com.baru.survivor.backend.village;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import com.baru.survivor.backend.agents.Bag;
 import com.baru.survivor.backend.resources.Resource;
 import com.baru.survivor.backend.resources.ResourceType;
 
-public class Tribe {
+public class Tribe implements Serializable{
 
 	private List<Agent> members = new ArrayList<Agent>();
 	private List<Agent> insideVillage = new ArrayList<Agent>();

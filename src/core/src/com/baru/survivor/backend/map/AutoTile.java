@@ -1,12 +1,13 @@
 package com.baru.survivor.backend.map;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.baru.survivor.Survivor;
 
-public class AutoTile {
+public class AutoTile implements Serializable{
 
 	HashMap<Point, Byte> updateTiles = new HashMap<Point, Byte>();
 	private byte[][] bitStatus;

@@ -1,5 +1,7 @@
 package com.baru.survivor.backend;
 
+import java.io.Serializable;
+
 import com.baru.survivor.Survivor;
 import com.baru.survivor.backend.agents.AgentManager;
 import com.baru.survivor.backend.agents.DayCycle;
@@ -9,15 +11,15 @@ import com.baru.survivor.backend.resources.ReservoirManager;
 import com.baru.survivor.backend.village.Tribe;
 import com.baru.survivor.backend.village.TribeManager;
 
-public class Status {
+public class State implements Serializable{
 
 	private TerrainManager terrainManager = new TerrainManager();
 	private AgentManager agentManager = new AgentManager();
 	private ReservoirManager resourceManager = new ReservoirManager();
 	private TribeManager tribeManager = new TribeManager();
-	private long lastTick = System.currentTimeMillis();
 	private DayCycle cycle = DayCycle.DAY;
 	private int tickCounter = 0;
+	private long lastTick = System.currentTimeMillis();
 
 	public void nextState(long curTime){
 		long elapsedTime = curTime - lastTick;
@@ -35,7 +37,7 @@ public class Status {
 		}
 	}
 	
-	public void create(int tribesNum, int villagersPerTribe, int foodNum, int foodDur, int lakeNum, int lakeDur) {
+	public State(int tribesNum, int villagersPerTribe, int foodNum, int foodDur, int lakeNum, int lakeDur) {
 		generateMap();
 		generateTribes(tribesNum, villagersPerTribe);
 		generateFood(foodNum, foodDur);

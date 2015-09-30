@@ -1,6 +1,8 @@
 package com.baru.survivor.backend.map;
 
-public enum TileType {
+import java.io.Serializable;
+
+public enum TileType implements Serializable{
 	GRASS,
 	GRASS_DECORATION,
 	COAST,

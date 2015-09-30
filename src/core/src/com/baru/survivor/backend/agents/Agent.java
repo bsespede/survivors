@@ -2,6 +2,7 @@ package com.baru.survivor.backend.agents;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Deque;
 import java.util.Random;
 
@@ -14,7 +15,7 @@ import com.baru.survivor.backend.resources.ReservoirManager;
 import com.baru.survivor.backend.resources.Resource;
 import com.baru.survivor.backend.resources.ResourceType;
 
-public class Agent {
+public class Agent implements Serializable{
 
 	private String name;
 	private Point position;
@@ -32,7 +33,7 @@ public class Agent {
 		this.kindness = rand.nextFloat();
 		this.foodBag = new Bag(Survivor.agentSlots);
 		this.waterBag = new Bag(Survivor.agentSlots);
-		this.hunger = 0.2f;
+		this.hunger = 1;
 		this.thirst = 1;	
 		this.visionRange = 2;
 		this.position = position;

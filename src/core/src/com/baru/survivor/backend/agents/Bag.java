@@ -1,11 +1,12 @@
 package com.baru.survivor.backend.agents;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.baru.survivor.backend.resources.Resource;
 
-public class Bag {
+public class Bag implements Serializable{
 		
 	private List<Resource> bag = new ArrayList<Resource>();
 	private int maxSlots = 3;

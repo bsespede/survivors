@@ -1,7 +1,9 @@
 package com.baru.survivor.backend.map;
 
+import java.io.Serializable;
 
-public class Tile {
+
+public class Tile implements Serializable{
 
 	private boolean blocked;
 	private TileType type;

@@ -14,12 +14,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.baru.survivor.Survivor;
-import com.baru.survivor.backend.Status;
+import com.baru.survivor.backend.State;
 import com.baru.survivor.backend.agents.Agent;
 import com.baru.survivor.backend.agents.DayCycle;
 import com.baru.survivor.frontend.canvas.Grid;
 
-public class UI {
+public class GameUI {
 
 	private SpriteBatch batch;
 	private Grid grid;
@@ -32,7 +32,7 @@ public class UI {
 	private TextureRegion barHg;
 	private TextureRegion barTh;
 	
-	public void create(Status status) {
+	public void create(State status) {
 
 		grid = new Grid();		
 		grid.fillTerrainLayers(status.getTerrainManager(), status.getTribeManager());
@@ -61,7 +61,7 @@ public class UI {
 		batch = new SpriteBatch();
 	}
 
-	public void render(Status status) {
+	public void render(State status) {
 
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

@@ -1,10 +1,11 @@
 package com.baru.survivor.backend.resources;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReservoirManager {
+public class ReservoirManager implements Serializable{
 
 	private Map<Point, Reservoir> reservoirs = new HashMap<Point, Reservoir>();
 	

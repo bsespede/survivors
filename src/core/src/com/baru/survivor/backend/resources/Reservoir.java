@@ -1,9 +1,10 @@
 package com.baru.survivor.backend.resources;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Reservoir {
+public class Reservoir implements Serializable{
 
 	private List<Resource> resources;
 	private ResourceType type;

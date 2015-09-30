@@ -1,6 +1,7 @@
 package com.baru.survivor.backend.agents;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +11,7 @@ import com.baru.survivor.backend.map.TerrainManager;
 import com.baru.survivor.backend.resources.ReservoirManager;
 import com.baru.survivor.backend.village.Tribe;
 
-public class AgentManager {
+public class AgentManager implements Serializable{
 
 	private List<Agent> agents = new ArrayList<Agent>();
 	private Map<Agent, Tribe> tribes = new HashMap<Agent, Tribe>();
