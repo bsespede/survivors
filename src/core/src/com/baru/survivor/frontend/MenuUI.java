@@ -8,36 +8,41 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.baru.survivor.Survivor;
 import com.baru.survivor.backend.State;
 
 public class MenuUI {
 
+	private Stage stage = new Stage();
 	private Skin skin;
-	private Stage stage = new Stage();;
-	private Table table;
+	private Table table, container;
 	
 	private Label seedName, tribesNum, villagersPerTribe, foodNum, foodDur, lakesNum, lakesDur;
 	private TextField seedNameField, tribesNumField, villagersPerTribeField, foodNumField, foodDurField, lakesNumField, lakesDurField;
 	private List files;
+	private ScrollPane scrollPane;
 	private TextButton loadFile, generateFile;
 	
 	
 	public void create() {    
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		table = new Table();
-		stage.addActor(table);
+		container = new Table();
+		scrollPane = new ScrollPane(container, skin);
+		scrollPane.setFadeScrollBars(false);;
+		stage.addActor(table);		
 		
 	    seedName = new Label("Seed name", skin);
 	    tribesNum = new Label("Tribes quantity", skin);
@@ -100,7 +105,8 @@ public class MenuUI {
 			}
 		});
 	    
-	    table.add(files).colspan(2).height(200).fillX().pad(10);
+	    container.add(files).fill().width(415);
+	    table.add(scrollPane).colspan(2).pad(10).height(200);
 	    table.row();
 	    table.add(loadFile).colspan(2).pad(10).fillX();
 	    table.row();
@@ -127,7 +133,7 @@ public class MenuUI {
 	    table.row();
 	    table.add(generateFile).colspan(2).fillX().pad(10);
 	    
-	    //table.debug();
+	    //table.debug();		
 	    table.setFillParent(true);
 	    Gdx.input.setInputProcessor(stage);
 	}

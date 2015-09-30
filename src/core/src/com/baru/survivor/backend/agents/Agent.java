@@ -133,7 +133,7 @@ public class Agent implements Serializable{
 			goTo(terrainManager, reservoirLocation);
 		}else{
 			int directionIndex = new Random().nextInt(Direction.values().length);
-			Direction dir = Direction.values()[directionIndex];				
+			Direction dir = Direction.values()[directionIndex];			
 			move(terrainManager, dir);
 		}			
 	}

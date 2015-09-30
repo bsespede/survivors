@@ -53,6 +53,8 @@ public class Survivor extends ApplicationAdapter {
 	            status = Status.STEP;
 	        }else if(Gdx.input.isKeyPressed(Input.Keys.F3)){
 	        	status = Status.PAUSE;
+	        }else if(Gdx.input.isKeyPressed(Input.Keys.F4)){
+	        	inMenu = 1;
 	        }
 			if (status != Status.PAUSE){
 				state.nextState(System.currentTimeMillis());
