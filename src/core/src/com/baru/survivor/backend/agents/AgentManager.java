@@ -31,9 +31,11 @@ public class AgentManager implements Serializable{
 				agent.explore(terrainManager, resourceManager);
 			}else{
 				if (agent.position().equals(tribes.get(agent).position())){
-					
+					agent.depositInTribeBag(tribes.get(agent));
+					agent.pickUpFromTribeBag(tribes.get(agent));
 				}else{
-					agent.goTo(terrainManager, tribes.get(agent).position());						
+					agent.goTo(terrainManager, tribes.get(agent).position());
+					agent.onTheWayToVillage();
 				}	
 			}
 			agent.pickUp(resourceManager);

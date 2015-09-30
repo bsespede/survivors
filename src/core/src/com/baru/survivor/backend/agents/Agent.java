@@ -14,12 +14,14 @@ import com.baru.survivor.backend.resources.Reservoir;
 import com.baru.survivor.backend.resources.ReservoirManager;
 import com.baru.survivor.backend.resources.Resource;
 import com.baru.survivor.backend.resources.ResourceType;
+import com.baru.survivor.backend.village.Tribe;
 
 public class Agent implements Serializable{
 
 	private String name;
 	private Point position;
 	private boolean moving;
+	private boolean justArrivedVillage;
 	private float hunger;
 	private float thirst;
 	private int visionRange;
@@ -46,32 +48,58 @@ public class Agent implements Serializable{
 		}
 	}
 
+	public void onTheWayToVillage(){
+		justArrivedVillage = true;
+	}		
+	
 	public CharSequence name() {
 		return name;
 	}
 
 	public void consumeFromBags(){
+		if (isHungry()){
+			consumeFromFoodBag();
+		}
+		if (isThirsty()){
+			consumeFromWaterBag();
+		}
+	}
+	
+	public boolean isHungry(){
 		if (kindness > 0.8){
 			if (hunger < 0.2){
-				consumeFromFoodBag();
+				return true;
 			}
-			if (thirst < 0.2){
-				consumeFromWaterBag();
-			}
+			return false;
 		}else if (kindness > 0.4){
 			if (hunger < 0.5){
-				consumeFromFoodBag();
+				return true;
 			}
-			if (thirst < 0.5){
-				consumeFromWaterBag();
-			}
+			return false;
 		}else{
 			if (hunger < 0.8){
-				consumeFromFoodBag();
+				return true;
 			}
+			return false;
+		}
+	}
+	
+	public boolean isThirsty(){
+		if (kindness > 0.8){
+			if (thirst < 0.2){
+				return true;
+			}
+			return false;
+		}else if (kindness > 0.4){
+			if (thirst < 0.5){
+				return true;
+			}
+			return false;
+		}else{
 			if (thirst < 0.8){
-				consumeFromWaterBag();
+				return true;
 			}
+			return false;
 		}
 	}
 	
@@ -271,6 +299,39 @@ public class Agent implements Serializable{
 	
 	public String waterStg() {
 		return ((Integer)waterBag.usedSlots()).toString();
+	}
+
+	public void depositInTribeBag(Tribe tribe) {
+		if (justArrivedVillage){
+			int foodToShare = (int)(kindness * foodBag.usedSlots());
+			int waterToShare = (int)(kindness * waterBag.usedSlots());
+			while (foodToShare > 0){
+				Resource food = foodBag.getResource();
+				tribe.getFoodVault().addresource(food);
+				foodToShare--;
+			}
+			while (waterToShare > 0){
+				Resource water = waterBag.getResource();
+				tribe.getWaterVault().addresource(water);
+				waterToShare--;
+			}
+			justArrivedVillage = false;
+		}
+	}
+
+	public void pickUpFromTribeBag(Tribe tribe) {
+		if (isHungry()){
+			Resource food = tribe.getFoodVault().getResource();
+			if (food != null){
+				foodBag.addresource(food);
+			}
+		}
+		if (isThirsty()){
+			Resource water = tribe.getWaterVault().getResource();
+			if (water != null){
+				waterBag.addresource(water);
+			}
+		}
 	}
 
 }

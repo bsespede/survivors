@@ -23,6 +23,14 @@ public class Tribe implements Serializable{
 		this.villageLocation = villageLocation;
 	}
 	
+	public Bag getWaterVault(){
+		return villageWaterVault;
+	}
+	
+	public Bag getFoodVault(){
+		return villageFoodVault;
+	}
+	
 	public void addMember(Agent agent) {
 		members.add(agent);
 	}
