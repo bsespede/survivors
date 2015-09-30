@@ -41,7 +41,7 @@ public class MenuUI {
 		table = new Table();
 		container = new Table();
 		scrollPane = new ScrollPane(container, skin);
-		scrollPane.setFadeScrollBars(false);;
+		scrollPane.setFadeScrollBars(true);
 		stage.addActor(table);		
 		
 	    seedName = new Label("Seed name", skin);
@@ -66,7 +66,7 @@ public class MenuUI {
 	    generateFile = new TextButton("Create seed", skin);
 	    
 	    generateFile.addListener(new ChangeListener() {
-			public void changed (ChangeEvent event, Actor actor) {
+	    	public void changed (ChangeEvent event, Actor actor) {
 				int tribesNumInt = Integer.valueOf(tribesNumField.getText());
 			    int villagersPerTribeInt = Integer.valueOf(villagersPerTribeField.getText());
 			    int foodNumInt = Integer.valueOf(foodNumField.getText());
@@ -81,7 +81,7 @@ public class MenuUI {
 			        out.close();
 			        fileOut.close();
 			    }catch(IOException i){
-			          i.printStackTrace();
+			        i.printStackTrace();
 			    }
 			}
 		});
@@ -105,8 +105,8 @@ public class MenuUI {
 			}
 		});
 	    
-	    container.add(files).fill().width(415);
-	    table.add(scrollPane).colspan(2).pad(10).height(200);
+	    container.add(files).width(420);
+	    table.add(scrollPane).colspan(2).pad(10).height(200).fillX();
 	    table.row();
 	    table.add(loadFile).colspan(2).pad(10).fillX();
 	    table.row();
