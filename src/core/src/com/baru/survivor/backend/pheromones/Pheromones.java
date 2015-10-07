@@ -16,10 +16,10 @@ public class Pheromones implements Serializable{
 	private int height;
 	private final float minPheromones = 1f;
 	private final float maxPheromones = 50f;
-	private final float stepPheromone = 1f;
-	private final float pheromoneLoss = 0.2f;
+	private final float stepPheromone = 2f;
+	private final float pheromoneLoss = 1f;
 	private final float interestCoeff = 1f;
-	private final float pheromoneCoeff = 1f;
+	private final float pheromoneCoeff = 0.5f;
 	
 	public Pheromones(int width, int height){
 		this.pheromones = new float[width][height];
@@ -53,12 +53,11 @@ public class Pheromones implements Serializable{
 					Direction dir = Direction.valueOf(x, y);
 					int targetX = position.x+x;
 					int targetY = position.y+y;
-					double interest = (goal == null)? 1: eulerDist(position, goal);
+					double interest = (goal == null)? 50: eulerDist(position, goal);
 					if (!terrainManager.isBlocked(new Point(targetX, targetY))){
 						double dirValue = Math.pow(pheromones[targetX][targetY], pheromoneCoeff) * Math.pow(interest, interestCoeff);
 						directionsValues.put(dir, dirValue);
 						totalValue += dirValue;
-						System.out.println(dir+" "+dirValue+" "+totalValue);
 					}
 				}
 			}
@@ -77,10 +76,7 @@ public class Pheromones implements Serializable{
 			if (diceValue <= sum){	
 				return dir;
 			}
-		}System.out.println(directionsValues);
-		System.out.println("Total: "+ totalValue);
-		System.out.println("Dice: "+diceValue);
-		System.out.println("Sum: "+sum);
+		}
 		return null;
 	}
 

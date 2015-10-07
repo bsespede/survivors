@@ -7,10 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.baru.survivor.Survivor;
 import com.baru.survivor.backend.map.TerrainManager;
 import com.baru.survivor.backend.pheromones.Pheromones;
-import com.baru.survivor.backend.resources.Reservoir;
 import com.baru.survivor.backend.resources.ReservoirManager;
 import com.baru.survivor.backend.village.Tribe;
 
@@ -26,19 +24,23 @@ public class AgentManager implements Serializable{
 				if (agent.position().equals(tribes.get(agent).position())){
 					agent.pickUpFromTribeBag(tribes.get(agent));
 				}else{
-					agent.explore(terrainManager, pheromones, tribes.get(agent).position());
+					agent.setGoalPoint(tribes.get(agent).position());
+					agent.explore(terrainManager, pheromones);
 					if (agent.position().equals(tribes.get(agent).position())){
 						agent.depositInTribeBag(tribes.get(agent));
 					}
 				}
 			}else{
-				Point closestReservoir = reservoirManager.getReservoirInRange(agent.position(), agent.getVision());
-				if (closestReservoir == null){
-					agent.explore(terrainManager, pheromones, null);
+				if (agent.pickUp(reservoirManager)){
+					agent.setGoalPoint(tribes.get(agent).position());
+				}else if (agent.position().equals(tribes.get(agent).position())){
+					agent.depositInTribeBag(tribes.get(agent));
+					agent.setGoalPoint(null);
 				}else{
-					agent.explore(terrainManager, pheromones, closestReservoir);
+					Point reservoirNearby = reservoirManager.getReservoirInRange(agent.position(), agent.getVision());
+					agent.setGoalPoint(reservoirNearby);
 				}
-				agent.pickUp(reservoirManager);
+				agent.explore(terrainManager, pheromones);
 			}
 			agent.consumeFromBags();
 			if (!agent.isDead() && !agent.position().equals(tribes.get(agent).position())){

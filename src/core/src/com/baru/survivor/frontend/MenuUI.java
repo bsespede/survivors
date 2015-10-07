@@ -94,6 +94,7 @@ public class MenuUI {
 			       State loadedState = (State) in.readObject();
 			       in.close();
 			       fileIn.close();
+			       loadedState.resetPheromones();
 			       Survivor.setState(loadedState);
 			    }catch(IOException i){
 			       i.printStackTrace();

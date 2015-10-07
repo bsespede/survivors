@@ -26,6 +26,7 @@ public class Agent implements Serializable{
 	private float kindness;
 	private Bag foodBag;
 	private Bag waterBag;
+	private Point goal;
 	
 	public Agent(Point position){
 		Random rand = new Random();
@@ -120,17 +121,19 @@ public class Agent implements Serializable{
 		}
 	}
 
-	public void explore(TerrainManager terrainManager, Pheromones pheromones, Point goal) {
+	public void explore(TerrainManager terrainManager, Pheromones pheromones) {
 		Direction dir = pheromones.getDirFrom(terrainManager, position, goal);
 		position = new Point(position.x + dir.getX(), position.y + dir.getY());
 	}
 	
-	public void pickUp(ReservoirManager reservoirManager) {
+	public boolean pickUp(ReservoirManager reservoirManager) {
 		Reservoir reservoir = reservoirManager.getReservoirAt(position);
 		if (reservoir != null) {
 				consumeResourceTillFull(reservoir);
 				fillBagWithResource(reservoir);
+				return true;
 		}			
+		return false;
 	}
 
 	private void fillBagWithResource(Reservoir reservoir) {
@@ -261,6 +264,10 @@ public class Agent implements Serializable{
 
 	public int getVision() {
 		return visionRange;
+	}
+
+	public void setGoalPoint(Point goal) {
+		this.goal = goal;
 	}
 
 }
