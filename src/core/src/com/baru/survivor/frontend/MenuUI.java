@@ -139,7 +139,9 @@ public class MenuUI {
 	}
 	
 	public void render() {
+		
 		File folder = new File("./maps/");
+		folder.mkdir();
 	    String[] listOfFiles = folder.list();
 	    files.setItems(listOfFiles);
 	    

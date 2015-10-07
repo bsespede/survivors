@@ -18,11 +18,13 @@ import com.baru.survivor.backend.State;
 import com.baru.survivor.backend.agents.Agent;
 import com.baru.survivor.backend.agents.DayCycle;
 import com.baru.survivor.frontend.canvas.Grid;
+import com.baru.survivor.frontend.canvas.PheromonePainter;
 
 public class GameUI {
 
 	private SpriteBatch batch;
 	private Grid grid;
+	private PheromonePainter pherPainter;
 	private Sprite night;
 
 	private BitmapFont font;
@@ -37,6 +39,8 @@ public class GameUI {
 		grid = new Grid();		
 		grid.fillTerrainLayers(status.getTerrainManager(), status.getTribeManager());
 		grid.fillAgentVisuals(status.getAgentsManager());
+		
+		pherPainter = new PheromonePainter();
 		
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
@@ -67,12 +71,13 @@ public class GameUI {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		batch.begin();
-		grid.updateLayer(status.getAgentsManager(), status.getResourceManager());
+		grid.updateLayer(status.getAgentsManager(), status.getResourceManager(), status.getPheromones());
 		grid.draw(batch);
 		if (status.getCycle() == DayCycle.NIGHT){
 			night.draw(batch, 0.5f);			
-		}else{
 		}
+		pherPainter.update(status.getPheromones());
+		pherPainter.draw(batch);
 		for (int x = 0; x < Survivor.width; x++) {
 			for (int y = 0; y < Survivor.height; y++) {
 				Point position = new Point(x, y);
@@ -106,6 +111,7 @@ public class GameUI {
 		grid.dispose();
 		font.dispose();
 		text.dispose();
+		pherPainter.dispose();
 		batch.dispose();
 	}
 

@@ -1,5 +1,6 @@
 package com.baru.survivor.backend;
 
+import java.awt.Point;
 import java.io.Serializable;
 
 import com.baru.survivor.Survivor;
@@ -7,6 +8,7 @@ import com.baru.survivor.backend.agents.AgentManager;
 import com.baru.survivor.backend.agents.DayCycle;
 import com.baru.survivor.backend.map.TerrainGenerator;
 import com.baru.survivor.backend.map.TerrainManager;
+import com.baru.survivor.backend.pheromones.Pheromones;
 import com.baru.survivor.backend.resources.ReservoirManager;
 import com.baru.survivor.backend.village.Tribe;
 import com.baru.survivor.backend.village.TribeManager;
@@ -17,6 +19,7 @@ public class State implements Serializable{
 	private AgentManager agentManager = new AgentManager();
 	private ReservoirManager resourceManager = new ReservoirManager();
 	private TribeManager tribeManager = new TribeManager();
+	private Pheromones pheromones = new Pheromones(Survivor.width, Survivor.height);
 	private DayCycle cycle = DayCycle.DAY;
 	private int tickCounter = 0;
 	private long lastTick = System.currentTimeMillis();
@@ -31,7 +34,7 @@ public class State implements Serializable{
 					tickCounter = 0;
 				}
 			}
-			agentManager.tickTime(terrainManager, resourceManager, cycle);
+			agentManager.tickTime(terrainManager, resourceManager, cycle, pheromones);
 			lastTick = curTime;	
 			tickCounter++;
 		}
@@ -58,10 +61,11 @@ public class State implements Serializable{
 	
 	private void generateTribes(int tribesNum, int villagersPerTribe) {
 		for (int i = 0; i < tribesNum; i++) {
-			Tribe tribe = new Tribe(terrainManager.getSpawnablePoint());
+			Point tribeLocation = terrainManager.getSpawnablePoint();
+			Tribe tribe = new Tribe(tribeLocation);
 			tribeManager.addTribe(tribe);
 			for (int j = 0; j < villagersPerTribe; j++) {
-				agentManager.generateAgent(terrainManager.getSpawnablePoint(), tribe);
+				agentManager.generateAgent(tribeLocation, tribe);
 			}
 		}		
 	}
@@ -90,6 +94,10 @@ public class State implements Serializable{
 
 	public TribeManager getTribeManager() {
 		return tribeManager;
+	}
+
+	public Pheromones getPheromones() {
+		return pheromones;
 	}
 	
 }

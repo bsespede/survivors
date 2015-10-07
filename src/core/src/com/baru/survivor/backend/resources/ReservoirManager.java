@@ -24,5 +24,17 @@ public class ReservoirManager implements Serializable{
 			return null;
 		}
 	}
+
+	public Point getReservoirInRange(Point position, int vision) {
+		Point closestReservoir = null;
+		for (Point reservoirPosition: reservoirs.keySet()){
+			if (reservoirPosition.x <= position.x+vision && reservoirPosition.x >= position.x-vision && 
+					reservoirPosition.y <= position.y+vision && reservoirPosition.y >= position.y-vision){
+					closestReservoir = reservoirPosition;
+					break;
+			}
+		}
+		return closestReservoir;
+	}
 	
 }

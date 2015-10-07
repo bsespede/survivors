@@ -16,8 +16,8 @@ public class Survivor extends ApplicationAdapter {
 	public static final int secondsPerDay = 60;
 	public static final String spriteSheet = "spriteSheet-big.png";
 	public static final int dayTicks = (1000/Survivor.tickTime) * Survivor.secondsPerDay;
-	public static final int agentSlots = 3;
-	public static final int villageSlots = 1500;	
+	public static int agentSlots = 3;
+	public static int villageSlots = 1500;
 	
 	private static State state;
 	private Status status = Status.RUN;

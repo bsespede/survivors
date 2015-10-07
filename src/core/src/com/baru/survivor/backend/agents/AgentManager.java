@@ -7,7 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.baru.survivor.Survivor;
 import com.baru.survivor.backend.map.TerrainManager;
+import com.baru.survivor.backend.pheromones.Pheromones;
+import com.baru.survivor.backend.resources.Reservoir;
 import com.baru.survivor.backend.resources.ReservoirManager;
 import com.baru.survivor.backend.village.Tribe;
 
@@ -16,31 +19,33 @@ public class AgentManager implements Serializable{
 	private List<Agent> agents = new ArrayList<Agent>();
 	private Map<Agent, Tribe> tribes = new HashMap<Agent, Tribe>();
 
-	public void tickTime(TerrainManager terrainManager, ReservoirManager resourceManager, DayCycle cycle) {
+	public void tickTime(TerrainManager terrainManager, ReservoirManager reservoirManager, DayCycle cycle, Pheromones pheromones) {
 		for (Agent agent: agents){
 			agent.addHungerThirst();
-			if (agent.isMoving() && !agent.isDead()){
-					agent.continueMoving(terrainManager);
-			}else if (cycle == DayCycle.DAY){
-//				if (agent.wantsToShare()){
-//					agent.goTo(terrainManager, tribes.get(agent).position());
-//				}
-//				if (agent.position().equals(tribes.get(agent).position() && agent.wentToShare() != null)){
-//					tribes.get(agent)
-//				}
-				agent.explore(terrainManager, resourceManager);
-			}else{
+			if (cycle == DayCycle.NIGHT){
 				if (agent.position().equals(tribes.get(agent).position())){
-					agent.depositInTribeBag(tribes.get(agent));
 					agent.pickUpFromTribeBag(tribes.get(agent));
 				}else{
-					agent.goTo(terrainManager, tribes.get(agent).position());
-					agent.onTheWayToVillage();
-				}	
+					agent.explore(terrainManager, pheromones, tribes.get(agent).position());
+					if (agent.position().equals(tribes.get(agent).position())){
+						agent.depositInTribeBag(tribes.get(agent));
+					}
+				}
+			}else{
+				Point closestReservoir = reservoirManager.getReservoirInRange(agent.position(), agent.getVision());
+				if (closestReservoir == null){
+					agent.explore(terrainManager, pheromones, null);
+				}else{
+					agent.explore(terrainManager, pheromones, closestReservoir);
+				}
+				agent.pickUp(reservoirManager);
 			}
-			agent.pickUp(resourceManager);
 			agent.consumeFromBags();
+			if (!agent.isDead() && !agent.position().equals(tribes.get(agent).position())){
+				pheromones.addPheromone(agent.position().x, agent.position().y);
+			}
 		}
+		pheromones.evaporatePheromones();
 	}
 	
 	public List<Agent> getAgents() {
