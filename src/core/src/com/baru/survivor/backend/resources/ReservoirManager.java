@@ -29,7 +29,8 @@ public class ReservoirManager implements Serializable{
 		Point closestReservoir = null;
 		for (Point reservoirPosition: reservoirs.keySet()){
 			if (reservoirPosition.x <= position.x+vision && reservoirPosition.x >= position.x-vision && 
-					reservoirPosition.y <= position.y+vision && reservoirPosition.y >= position.y-vision){
+					reservoirPosition.y <= position.y+vision && reservoirPosition.y >= position.y-vision &&
+					reservoirs.get(reservoirPosition).hasResource()){
 					closestReservoir = reservoirPosition;
 					break;
 			}

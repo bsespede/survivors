@@ -24,7 +24,7 @@ public class PheromonePainter{
 		for (int x = 0; x < Survivor.width; x++) {
 			for (int y = 0; y < Survivor.height; y++) {
 				pheromoneSprite.setPosition(x * Survivor.tileSize, Gdx.graphics.getHeight()-(y+1)*Survivor.tileSize);
-				pheromoneSprite.draw(batch, pheromones.getIntensity(x, y) / pheromones.getMaxPheromones());
+				pheromoneSprite.draw(batch, pheromones.getIntensity(x, y));
 			}
 		}
 	}

@@ -19,7 +19,7 @@ public class Agent implements Serializable{
 
 	private String name;
 	private Point position;
-	private boolean justArrivedVillage;
+	private Point lastPosition;
 	private float hunger;
 	private float thirst;
 	private int visionRange;
@@ -27,6 +27,7 @@ public class Agent implements Serializable{
 	private Bag foodBag;
 	private Bag waterBag;
 	private Point goal;
+	private Goal goalState;
 	
 	public Agent(Point position){
 		Random rand = new Random();
@@ -121,17 +122,21 @@ public class Agent implements Serializable{
 		}
 	}
 
-	public void explore(TerrainManager terrainManager, Pheromones pheromones) {
-		Direction dir = pheromones.getDirFrom(terrainManager, position, goal);
-		position = new Point(position.x + dir.getX(), position.y + dir.getY());
+	public void move(TerrainManager terrainManager, AgentManager agentManager, Point tribePosition, Pheromones pheromones) {
+		Direction dir = pheromones.getDirFrom(terrainManager, position, lastPosition, goal);
+		Point newPosition = new Point(position.x + dir.getX(), position.y + dir.getY());
+		if (newPosition.equals(tribePosition) || agentManager.noAgentsAt(newPosition)){
+			lastPosition = position;
+			position = new Point(newPosition);
+		}
 	}
 	
 	public boolean pickUp(ReservoirManager reservoirManager) {
 		Reservoir reservoir = reservoirManager.getReservoirAt(position);
-		if (reservoir != null) {
-				consumeResourceTillFull(reservoir);
-				fillBagWithResource(reservoir);
-				return true;
+		if (reservoir != null && reservoir.hasResource()) {
+			consumeResourceTillFull(reservoir);
+			fillBagWithResource(reservoir);
+			return true;
 		}			
 		return false;
 	}
@@ -230,23 +235,31 @@ public class Agent implements Serializable{
 	}
 
 	public void depositInTribeBag(Tribe tribe) {
-		if (justArrivedVillage){
-			int foodToShare = (int)(kindness * foodBag.usedSlots());
-			int waterToShare = (int)(kindness * waterBag.usedSlots());
-			while (foodToShare > 0){
-				Resource food = foodBag.getResource();
-				tribe.getFoodVault().addresource(food);
-				foodToShare--;
-			}
-			while (waterToShare > 0){
-				Resource water = waterBag.getResource();
-				tribe.getWaterVault().addresource(water);
-				waterToShare--;
-			}
-			justArrivedVillage = false;
+		int foodToShare = (int)(getPercentageToDeposit() * foodBag.usedSlots());
+		int waterToShare = (int)(getPercentageToDeposit() * waterBag.usedSlots());
+		while (foodToShare > 0){
+			Resource food = foodBag.getResource();
+			tribe.getFoodVault().addresource(food);
+			foodToShare--;
+		}
+		while (waterToShare > 0){
+			Resource water = waterBag.getResource();
+			tribe.getWaterVault().addresource(water);
+			waterToShare--;
 		}
 	}
 
+	public float getPercentageToDeposit(){
+		return 1;
+		/*if (kindness > 0.8){
+			return 1;
+		}else if (kindness > 0.5){
+			return 0.5f;
+		}else {
+			return 0;
+		}*/
+	}
+	
 	public void pickUpFromTribeBag(Tribe tribe) {
 		if (isHungry()){
 			Resource food = tribe.getFoodVault().getResource();
@@ -266,8 +279,13 @@ public class Agent implements Serializable{
 		return visionRange;
 	}
 
-	public void setGoalPoint(Point goal) {
+	public void setGoalPoint(Point goal, Goal goalState) {
 		this.goal = goal;
+		this.goalState = goalState;
+	}
+
+	public Goal getGoalState() {
+		return goalState;
 	}
 
 }

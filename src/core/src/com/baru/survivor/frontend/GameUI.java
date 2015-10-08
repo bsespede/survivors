@@ -3,6 +3,7 @@ package com.baru.survivor.frontend;
 import java.awt.Point;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -17,6 +18,7 @@ import com.baru.survivor.Survivor;
 import com.baru.survivor.backend.State;
 import com.baru.survivor.backend.agents.Agent;
 import com.baru.survivor.backend.agents.DayCycle;
+import com.baru.survivor.backend.pheromones.Pheromones;
 import com.baru.survivor.frontend.canvas.Grid;
 import com.baru.survivor.frontend.canvas.PheromonePainter;
 
@@ -76,8 +78,9 @@ public class GameUI {
 		if (status.getCycle() == DayCycle.NIGHT){
 			night.draw(batch, 0.5f);			
 		}
-		pherPainter.update(status.getPheromones());
-		pherPainter.draw(batch);
+		Pheromones updatePheromones = status.getPheromones();
+		pherPainter.update(updatePheromones);
+		//pherPainter.draw(batch);
 		for (int x = 0; x < Survivor.width; x++) {
 			for (int y = 0; y < Survivor.height; y++) {
 				Point position = new Point(x, y);
@@ -87,6 +90,10 @@ public class GameUI {
 					drawAgentBars(agent, x, y);
 				}
 			}			
+		}
+		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+			font.draw(batch, String.valueOf(updatePheromones.getIntensity(Gdx.input.getX()/Survivor.tileSize, (Gdx.input.getY()) / Survivor.tileSize)),
+					Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 		}
 		
 		batch.end();
