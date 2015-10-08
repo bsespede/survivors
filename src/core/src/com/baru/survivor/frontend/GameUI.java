@@ -3,6 +3,7 @@ package com.baru.survivor.frontend;
 import java.awt.Point;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -17,12 +18,15 @@ import com.baru.survivor.Survivor;
 import com.baru.survivor.backend.State;
 import com.baru.survivor.backend.agents.Agent;
 import com.baru.survivor.backend.agents.DayCycle;
+import com.baru.survivor.backend.pheromones.Pheromones;
 import com.baru.survivor.frontend.canvas.Grid;
+import com.baru.survivor.frontend.canvas.PheromonePainter;
 
 public class GameUI {
 
 	private SpriteBatch batch;
 	private Grid grid;
+	private PheromonePainter pherPainter;
 	private Sprite night;
 
 	private BitmapFont font;
@@ -37,6 +41,8 @@ public class GameUI {
 		grid = new Grid();		
 		grid.fillTerrainLayers(status.getTerrainManager(), status.getTribeManager());
 		grid.fillAgentVisuals(status.getAgentsManager());
+		
+		pherPainter = new PheromonePainter();
 		
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
@@ -67,12 +73,14 @@ public class GameUI {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		batch.begin();
-		grid.updateLayer(status.getAgentsManager(), status.getResourceManager());
+		grid.updateLayer(status.getAgentsManager(), status.getResourceManager(), status.getPheromones());
 		grid.draw(batch);
 		if (status.getCycle() == DayCycle.NIGHT){
 			night.draw(batch, 0.5f);			
-		}else{
 		}
+		Pheromones updatePheromones = status.getPheromones();
+		pherPainter.update(updatePheromones);
+		//pherPainter.draw(batch);
 		for (int x = 0; x < Survivor.width; x++) {
 			for (int y = 0; y < Survivor.height; y++) {
 				Point position = new Point(x, y);
@@ -82,6 +90,10 @@ public class GameUI {
 					drawAgentBars(agent, x, y);
 				}
 			}			
+		}
+		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+			font.draw(batch, String.valueOf(updatePheromones.getIntensity(Gdx.input.getX()/Survivor.tileSize, (Gdx.input.getY()) / Survivor.tileSize)),
+					Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 		}
 		
 		batch.end();
@@ -106,6 +118,7 @@ public class GameUI {
 		grid.dispose();
 		font.dispose();
 		text.dispose();
+		pherPainter.dispose();
 		batch.dispose();
 	}
 

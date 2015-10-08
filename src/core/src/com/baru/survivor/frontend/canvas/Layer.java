@@ -8,7 +8,7 @@ import com.baru.survivor.Survivor;
 import com.baru.survivor.frontend.sprite.AnimatedSprite;
 import com.baru.survivor.frontend.sprite.SimpleSprite;
 
-public class Layer {
+public class Layer{
 
 	private SimpleSprite[][] tiles;
 	

@@ -14,6 +14,7 @@ import com.baru.survivor.backend.agents.Agent;
 import com.baru.survivor.backend.agents.AgentManager;
 import com.baru.survivor.backend.map.TerrainManager;
 import com.baru.survivor.backend.map.TileType;
+import com.baru.survivor.backend.pheromones.Pheromones;
 import com.baru.survivor.backend.resources.Reservoir;
 import com.baru.survivor.backend.resources.ReservoirManager;
 import com.baru.survivor.backend.resources.ResourceType;
@@ -29,14 +30,10 @@ public class Grid {
 	private Map<Agent, SimpleSprite> agentVisuals = new HashMap<Agent, SimpleSprite>();
 	private List<Layer> layers = new ArrayList<Layer>();
 	
-	public Grid() {
-		for (int i = 0; i < 6; i++) {
-			layers.add(new Layer());
+	public Grid(){
+		for (int i = 0; i < 6; i++){
+			layers.add(null);
 		}
-	}
-	
-	public SimpleSprite getSprite(Point position, int layer) {
-		return layers.get(layer).getSprite(position);
 	}
 
 	public void fillTerrainLayers(TerrainManager map, TribeManager tribes) {
@@ -46,17 +43,17 @@ public class Grid {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Layer waterLayer = layers.get(0);
-		Layer landLayer = layers.get(1);
-		Layer shadeLayer = layers.get(2);
-		Layer decoLayer = layers.get(3);
+		Layer waterLayer = new Layer();
+		Layer landLayer = new Layer();
+		Layer shadeLayer = new Layer();
+		Layer decoLayer = new Layer();
 		
 		boolean shouldShade = true;
 		for (int x = 0; x < Survivor.width; x++) {
 			for (int y = 0; y < Survivor.height; y++) {
 				Point position = new Point(x, y);
 				if (shouldShade){
-					shadeLayer.setSprite(spriteGenerator.generateIndex(SpriteType.SHADE, 0), position);
+					//shadeLayer.setSprite(spriteGenerator.generateIndex(SpriteType.SHADE, 0), position);
 					shouldShade = false;
 				} else {
 					shouldShade = true;
@@ -106,6 +103,11 @@ public class Grid {
 			decoLayer.setSprite(spriteGenerator.generateRandom(SpriteType.HOUSE), curTribe.position());
 			landLayer.setSprite(spriteGenerator.generateIndex(SpriteType.GRASS, 0), curTribe.position());
 		}
+		
+		layers.set(0, waterLayer);
+		layers.set(1, landLayer);
+		layers.set(2, shadeLayer);
+		layers.set(3, decoLayer);
 	}
 	
 	public void fillAgentVisuals(AgentManager agentManager) {
@@ -114,7 +116,7 @@ public class Grid {
 		}
 	}
 	
-	public void updateLayer(AgentManager agentManager, ReservoirManager reservoirManager){
+	public void updateLayer(AgentManager agentManager, ReservoirManager reservoirManager, Pheromones pheromones){
 		Layer agentLayer = new Layer();
 		Layer resourceLayer = new Layer();
 		for (int x = 0; x < Survivor.width; x++) {
@@ -139,8 +141,8 @@ public class Grid {
 				}
 			}							
 		}
-		layers.set(5, agentLayer);
 		layers.set(4, resourceLayer);
+		layers.set(5, agentLayer);
 	}
 	
 	public void draw(SpriteBatch batch){		

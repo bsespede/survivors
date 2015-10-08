@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Random;
 
 import com.baru.survivor.Survivor;
+import com.baru.survivor.backend.agents.Direction;
 
 public class TerrainManager implements Serializable{
 
@@ -45,5 +46,22 @@ public class TerrainManager implements Serializable{
 
 	public static boolean isValidPoint(Point point) {
 		return (point.x >= 0 && point.x < Survivor.width) && (point.y >= 0 && point.y < Survivor.height);
+	}
+
+	public Direction getRandomValidDirectionFrom(int x, int y) {
+		boolean foundValidDirection = false;
+		Direction resultDirection = null;
+		Random rnd = new Random();
+		while (!foundValidDirection){
+			int possibleX = -1 + rnd.nextInt(3);
+			int possibleY = -1 + rnd.nextInt(3);
+			Point possiblePoint = new Point(x+possibleX, y+possibleY);
+			Point curPoint = new Point(x, y);
+			if (!curPoint.equals(possiblePoint) && isValidPoint(possiblePoint) && !isBlocked(possiblePoint)){
+				resultDirection = Direction.valueOf(possibleX, possibleY);
+				foundValidDirection = true;
+			}
+		}
+		return resultDirection;
 	}
 }

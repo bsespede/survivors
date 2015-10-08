@@ -94,6 +94,7 @@ public class MenuUI {
 			       State loadedState = (State) in.readObject();
 			       in.close();
 			       fileIn.close();
+			       loadedState.resetPheromones();
 			       Survivor.setState(loadedState);
 			    }catch(IOException i){
 			       i.printStackTrace();
@@ -139,7 +140,9 @@ public class MenuUI {
 	}
 	
 	public void render() {
+		
 		File folder = new File("./maps/");
+		folder.mkdir();
 	    String[] listOfFiles = folder.list();
 	    files.setItems(listOfFiles);
 	    

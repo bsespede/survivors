@@ -32,6 +32,8 @@ public enum Direction {
 			return NE;
 		}else if (x == -1 && y == 1){
 			return SW;
+		}else if (x == -1 && y == 0){
+			return WEST;
 		}else{
 			return SE;
 		}
