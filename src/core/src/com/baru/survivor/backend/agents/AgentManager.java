@@ -28,8 +28,9 @@ public class AgentManager implements Serializable{
 					if (agent.position().equals(tribePosition)){
 						agent.pickUpFromTribeBag(tribe);
 					}else{
-						if (agent.getGoalState() != Goal.GO_HOME){
-							agent.setGoalPoint(tribePosition, Goal.GO_HOME);
+						if (agent.getGoalState() != Status.GO_HOME){
+							agent.setGoalPoint(tribePosition, Status.GO_HOME);
+							agent.cleanPath();
 						}
 						agent.move(terrainManager, this, tribePosition, pheromones);
 						if (agent.position().equals(tribePosition)){
@@ -38,22 +39,23 @@ public class AgentManager implements Serializable{
 					}
 				}else{
 					if (agent.pickUp(reservoirManager)){
-						agent.setGoalPoint(tribePosition, Goal.GO_HOME);
+						agent.setGoalPoint(tribePosition, Status.GO_HOME);
+						agent.cleanPath();
 					}else if (agent.position().equals(tribePosition)){
 						agent.depositInTribeBag(tribe);
 						agent.pickUpFromTribeBag(tribe);
-						agent.setGoalPoint(null, Goal.FIND_RESOURCE);
-					}else if (agent.getGoalState() == Goal.FIND_RESOURCE){
+						agent.setGoalPoint(null, Status.SEARCH_RESOURCE);
+					}else if (agent.getGoalState() == Status.SEARCH_RESOURCE){
 						Point reservoirNearby = reservoirManager.getReservoirInRange(agent.position(), agent.getVision());
 						if (reservoirNearby != null){
-							agent.setGoalPoint(reservoirNearby, Goal.FETCH_RESOURCE);							
+							agent.setGoalPoint(reservoirNearby, Status.GRAB_RESOURCE);							
 						}
 					}
 					agent.move(terrainManager, this, tribePosition, pheromones);
 				}
 				agent.consumeFromBags();
 				if (!agent.position().equals(tribePosition) && (!positionBeforeTurn.equals(agent.position()))){
-					pheromones.addPheromone(agent.position().x, agent.position().y);
+					pheromones.addPheromone(agent.position().x, agent.position().y, agent.getPheromoneIntensity());
 				}
 			}
 		}

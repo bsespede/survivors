@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import com.baru.survivor.Survivor;
+import com.baru.survivor.backend.agents.AgentManager;
 import com.baru.survivor.backend.agents.Direction;
 import com.baru.survivor.backend.map.TerrainManager;
 
@@ -18,9 +20,9 @@ public class Pheromones implements Serializable{
 	private final float minPheromones = 0.0001f;
 	private final float maxPheromones = 1f;
 	private final float stepPheromone = 0.1f;
-	private final float pheromoneLoss = 0.01f;
+	private final float pheromoneLoss = 0.03f;
 	private final float interestCoeff = 10f;
-	private final float pheromoneCoeff = 0f;
+	private final float pheromoneCoeff = 0.3f;
 	
 	private final float randomMoveH = 0.2f;
 	
@@ -35,8 +37,8 @@ public class Pheromones implements Serializable{
 		}
 	}
 	
-	public void addPheromone(int x, int y){
-		pheromones[x][y] = (pheromones[x][y]+stepPheromone > maxPheromones)? maxPheromones: pheromones[x][y]+stepPheromone;
+	public void addPheromone(int x, int y, float intensity){
+		pheromones[x][y] = (pheromones[x][y]+stepPheromone > maxPheromones)? maxPheromones: pheromones[x][y]+(stepPheromone*intensity);
 	}
 	
 	public void evaporatePheromones(){
@@ -47,7 +49,7 @@ public class Pheromones implements Serializable{
 		}
 	}
 	
-	public Direction getDirFrom(TerrainManager terrainManager, Point position, Point lastPosition, Point goal){
+	public Direction getDirFrom(AgentManager agentManager, Point tribePosition, TerrainManager terrainManager, Point position, Point lastPosition, Point goal){
 		Map<Direction, Double> directionsValues = new HashMap<Direction, Double>();
 		double totalValue = 0;
 		for (int x = -1; x <= 1; x++){
@@ -55,12 +57,15 @@ public class Pheromones implements Serializable{
 				if (!(x == 0 && y == 0)){
 					Direction dir = Direction.valueOf(x, y);
 					Point target = new Point(position.x+x, position.y+y);
-					double difference = 1;
-					if (lastPosition != null){
-						difference = eulerDist(lastPosition, target);
+					double difference;
+					if (lastPosition == null){
+						difference = 1;
+					}else{
+						difference = eulerDist(terrainManager, lastPosition, target);
 					}
-					double interest = (goal == null)? randomMoveH * difference: 1/bfsDist(target, goal, new HashMap<Point, Integer>, 0);
-					if (TerrainManager.isValidPoint(target) && !terrainManager.isBlocked(target)){
+					double interest = (goal == null)? randomMoveH * difference: difference/eulerDist(terrainManager, target, goal);
+					if ((Survivor.pathBlockingDisabled || agentManager.noAgentsAt(target) || target.equals(tribePosition)) && 
+							TerrainManager.isValidPoint(target) && !terrainManager.isBlocked(target)){
 						if (interest == Double.POSITIVE_INFINITY){
 							return dir;
 						}
@@ -72,15 +77,6 @@ public class Pheromones implements Serializable{
 			}
 		}
 		return throwDiceForDirection(directionsValues, totalValue);
-	}
-
-	private int bfsDist(Point cur, Point goal,
-			HashMap<Point, Integer> hashMap, int length) {
-		if (cur.equals(goal)){
-			return length;
-		}
-		if ()
-		return 0;
 	}
 
 	private Direction throwDiceForDirection(
@@ -98,7 +94,10 @@ public class Pheromones implements Serializable{
 		return null;
 	}
 
-	private double eulerDist(Point from, Point to){
+	private double eulerDist(TerrainManager tm, Point from, Point to){
+		if (tm.isBlocked(from)){
+			return Double.MAX_VALUE;
+		}
 		return Math.sqrt(Math.pow(to.x - from.x, 2)+Math.pow(to.y - from.y, 2));
 	}
 	

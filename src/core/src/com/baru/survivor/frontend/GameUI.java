@@ -80,7 +80,7 @@ public class GameUI {
 		}
 		Pheromones updatePheromones = status.getPheromones();
 		pherPainter.update(updatePheromones);
-		//pherPainter.draw(batch);
+		pherPainter.draw(batch);
 		for (int x = 0; x < Survivor.width; x++) {
 			for (int y = 0; y < Survivor.height; y++) {
 				Point position = new Point(x, y);
