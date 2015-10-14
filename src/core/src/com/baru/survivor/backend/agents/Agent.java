@@ -3,6 +3,8 @@ package com.baru.survivor.backend.agents;
 import java.awt.Point;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -20,6 +22,8 @@ public class Agent implements Serializable{
 	private String name;
 	private Point position;
 	private Point lastPosition;
+	private List<Point> path;
+	private float pheromoneIntensity;
 	private float hunger;
 	private float thirst;
 	private int visionRange;
@@ -27,7 +31,7 @@ public class Agent implements Serializable{
 	private Bag foodBag;
 	private Bag waterBag;
 	private Point goal;
-	private Goal goalState;
+	private Status goalState;
 	
 	public Agent(Point position){
 		Random rand = new Random();
@@ -35,7 +39,10 @@ public class Agent implements Serializable{
 		this.foodBag = new Bag(Survivor.agentSlots);
 		this.waterBag = new Bag(Survivor.agentSlots);
 		this.hunger = 1;
+		this.path = new LinkedList<Point>();
+		this.path.add(position);
 		this.thirst = 1;	
+		this.pheromoneIntensity = 1;
 		this.visionRange = 2;
 		this.position = position;
 		NameGenerator ng;
@@ -123,12 +130,32 @@ public class Agent implements Serializable{
 	}
 
 	public void move(TerrainManager terrainManager, AgentManager agentManager, Point tribePosition, Pheromones pheromones) {
-		Direction dir = pheromones.getDirFrom(terrainManager, position, lastPosition, goal);
-		Point newPosition = new Point(position.x + dir.getX(), position.y + dir.getY());
-		if (newPosition.equals(tribePosition) || agentManager.noAgentsAt(newPosition)){
-			lastPosition = position;
-			position = new Point(newPosition);
-		}
+		if (goalState == Status.GO_HOME){
+			Point newPosition = path.get(0);
+			if (Survivor.pathBlockingDisabled || agentManager.noAgentsAt(newPosition) || newPosition.equals(tribePosition)){
+				lastPosition = position;
+				position = new Point(newPosition);
+				if (!newPosition.equals(tribePosition)){
+					path.remove(0);
+				}else{
+					lastPosition = null;
+					pheromoneIntensity = 1;
+				}
+			}
+		}else{
+			Direction dir = pheromones.getDirFrom(agentManager, tribePosition, terrainManager, position, lastPosition, goal);
+			if (dir != null){
+				Point newPosition = new Point(position.x + dir.getX(), position.y + dir.getY());
+				lastPosition = position;
+				position = new Point(newPosition);
+				path.add(0, newPosition);
+				pheromoneIntensity *= 1f - Survivor.pheromoneLossPercentage;
+			}
+		}		
+	}
+	
+	public float getPheromoneIntensity(){
+		return pheromoneIntensity;		
 	}
 	
 	public boolean pickUp(ReservoirManager reservoirManager) {
@@ -279,13 +306,41 @@ public class Agent implements Serializable{
 		return visionRange;
 	}
 
-	public void setGoalPoint(Point goal, Goal goalState) {
+	public void setGoalPoint(Point goal, Status goalState) {
 		this.goal = goal;
 		this.goalState = goalState;
 	}
 
-	public Goal getGoalState() {
+	public Status getGoalState() {
 		return goalState;
+	}
+
+	public void cleanPath() {
+		path.remove(0);
+		List<Point> visited = new LinkedList<Point>();
+		findRepeats(0, visited);
+	}
+
+	private void findRepeats(int curIndex, List<Point> visited) {
+		if (curIndex == path.size()){
+			return;
+		}
+		Point curPoint = path.get(curIndex);
+		if (visited.contains(curPoint)){
+			curIndex = removeUntil(curPoint, curIndex-1, visited);
+		}else{
+			visited.add(curPoint);
+		}
+		findRepeats(curIndex+1, visited);
+	}
+
+	private int removeUntil(Point origPoint, int i, List<Point> visited) {
+		Point removedPoint = path.remove(i);
+		visited.remove(removedPoint);
+		if (removedPoint.equals(origPoint)){
+			return i;
+		}
+		return removeUntil(origPoint, i-1, visited);
 	}
 
 }
