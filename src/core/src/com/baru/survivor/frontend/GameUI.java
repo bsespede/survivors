@@ -78,9 +78,15 @@ public class GameUI {
 		if (status.getCycle() == DayCycle.NIGHT){
 			night.draw(batch, 0.5f);			
 		}
-		Pheromones updatePheromones = status.getPheromones();
-		pherPainter.update(updatePheromones);
-		pherPainter.draw(batch);
+		if (Survivor.renderPheromones){
+			Pheromones updatePheromones = status.getPheromones();
+			pherPainter.update(updatePheromones);
+			pherPainter.draw(batch);
+			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+				font.draw(batch, String.valueOf(updatePheromones.getIntensity(Gdx.input.getX()/Survivor.tileSize, (Gdx.input.getY()) / Survivor.tileSize)),
+						Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+			}
+		}
 		for (int x = 0; x < Survivor.width; x++) {
 			for (int y = 0; y < Survivor.height; y++) {
 				Point position = new Point(x, y);
@@ -90,10 +96,6 @@ public class GameUI {
 					drawAgentBars(agent, x, y);
 				}
 			}			
-		}
-		if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
-			font.draw(batch, String.valueOf(updatePheromones.getIntensity(Gdx.input.getX()/Survivor.tileSize, (Gdx.input.getY()) / Survivor.tileSize)),
-					Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 		}
 		
 		batch.end();

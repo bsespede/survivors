@@ -19,12 +19,10 @@ public class Pheromones implements Serializable{
 	
 	private final float minPheromones = 0.0001f;
 	private final float maxPheromones = 1f;
-	private final float stepPheromone = 0.1f;
+	private final float stepPheromone = 0f;
 	private final float pheromoneLoss = 0.03f;
 	private final float interestCoeff = 10f;
 	private final float pheromoneCoeff = 0.3f;
-	
-	private final float randomMoveH = 0.2f;
 	
 	public Pheromones(int width, int height){
 		this.pheromones = new float[width][height];
@@ -63,7 +61,7 @@ public class Pheromones implements Serializable{
 					}else{
 						difference = eulerDist(terrainManager, lastPosition, target);
 					}
-					double interest = (goal == null)? randomMoveH * difference: difference/eulerDist(terrainManager, target, goal);
+					double interest = (goal == null)? difference: difference/eulerDist(terrainManager, target, goal);
 					if ((Survivor.pathBlockingDisabled || agentManager.noAgentsAt(target) || target.equals(tribePosition)) && 
 							TerrainManager.isValidPoint(target) && !terrainManager.isBlocked(target)){
 						if (interest == Double.POSITIVE_INFINITY){

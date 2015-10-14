@@ -18,6 +18,7 @@ public class Survivor extends ApplicationAdapter {
 	public static final int dayTicks = (1000/Survivor.tickTime) * Survivor.secondsPerDay;
 	public static final float pheromoneLossPercentage = 0f;
 	public static final boolean pathBlockingDisabled = true;
+	public static final boolean renderPheromones = false;
 	public static int agentSlots = 3;
 	public static int villageSlots = 1500;
 	
