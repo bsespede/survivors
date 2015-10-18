@@ -19,6 +19,7 @@ import com.baru.survivor.backend.State;
 import com.baru.survivor.backend.agents.Agent;
 import com.baru.survivor.backend.agents.DayCycle;
 import com.baru.survivor.backend.pheromones.Pheromones;
+import com.baru.survivor.backend.resources.Reservoir;
 import com.baru.survivor.frontend.canvas.Grid;
 import com.baru.survivor.frontend.canvas.PheromonePainter;
 
@@ -95,10 +96,22 @@ public class GameUI {
 					drawAgentName(agent, x, y);
 					drawAgentBars(agent, x, y);
 				}
+				Reservoir reservoir = status.getResourceManager().getReservoirAt(position);
+				if (reservoir != null){
+					drawResourceLimits(reservoir, x, y);
+				}
 			}			
 		}
 		
 		batch.end();
+	}
+
+	private void drawResourceLimits(Reservoir reservoir, int x, int y) {
+		int usesLeft = reservoir.getUsesLeft();
+		if (usesLeft > 0){
+		font.draw(batch, String.valueOf(usesLeft), x * Survivor.tileSize + 20,
+				Gdx.graphics.getHeight() - ((y+1) * Survivor.tileSize) + 10);
+		}
 	}
 
 	private void drawAgentBars(Agent agent, int x, int y) {

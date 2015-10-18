@@ -131,15 +131,19 @@ public class Agent implements Serializable{
 
 	public void move(TerrainManager terrainManager, AgentManager agentManager, Point tribePosition, Pheromones pheromones) {
 		if (goalState == Status.GO_HOME){
-			Point newPosition = path.get(0);
-			if (Survivor.pathBlockingDisabled || agentManager.noAgentsAt(newPosition) || newPosition.equals(tribePosition)){
-				lastPosition = position;
-				position = new Point(newPosition);
-				if (!newPosition.equals(tribePosition)){
-					path.remove(0);
-				}else{
-					lastPosition = null;
-					pheromoneIntensity = 1;
+			if (path.size() == 0){
+				System.out.println(this.name);
+			}else{
+				Point newPosition = path.get(0);
+				if (Survivor.pathBlockingDisabled || agentManager.noAgentsAt(newPosition) || newPosition.equals(tribePosition)){
+					lastPosition = position;
+					position = new Point(newPosition);
+					if (!newPosition.equals(tribePosition)){
+						path.remove(0);
+					}else{
+						lastPosition = null;
+						pheromoneIntensity = 1;
+					}
 				}
 			}
 		}else{

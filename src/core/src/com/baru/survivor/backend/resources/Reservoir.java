@@ -43,5 +43,9 @@ public class Reservoir implements Serializable{
 	public boolean hasResource() {
 		return !resources.isEmpty();
 	}
+
+	public int getUsesLeft() {
+		return resources.size();
+	}
 	
 }

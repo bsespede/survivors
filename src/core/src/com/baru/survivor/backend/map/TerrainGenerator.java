@@ -9,7 +9,7 @@ public class TerrainGenerator {
 	public static TerrainManager generateMap(){
 		Random rand = new Random();
 		ParticleDeposition particleGen = new ParticleDeposition(Survivor.width, Survivor.height);
-		double[][] particles = particleGen.makeDeposition(5, 3);
+		double[][] particles = particleGen.makeDeposition(15, 4);
 		Tile[][] tiles = new Tile[Survivor.width][Survivor.height];
 		AutoTile autoTiles = new AutoTile();
 		for (int i = 0; i < Survivor.width; i++) {
@@ -26,14 +26,14 @@ public class TerrainGenerator {
 						} else if (grassLandContent < 0.15) {
 							tiles[i][j] = new Tile(TileType.PLATEAU, false);
 						}
-					} else if (particleHeight < 0.4){
+					} else if (particleHeight < 0.5){
 						if (rand.nextFloat() < 0.7) {
 							tiles[i][j] = new Tile(TileType.TREE, false);
 						} else {
 							tiles[i][j] = new Tile(TileType.FOREST, false);
 						}
 						autoTiles.addTile(i, j);
-					} else if (particleHeight < 0.5){
+					} else if (particleHeight < 0.6){
 						tiles[i][j] = new Tile(TileType.FOREST, false);
 					} else {
 						tiles[i][j] = new Tile(TileType.MOUNTAIN, true);

@@ -46,9 +46,9 @@ public class State implements Serializable{
 	
 	public State(int tribesNum, int villagersPerTribe, int foodNum, int foodDur, int lakeNum, int lakeDur) {
 		generateMap();
-		generateTribes(tribesNum, villagersPerTribe);
 		generateFood(foodNum, foodDur);
 		generateWater(lakeNum, lakeDur);
+		generateTribes(tribesNum, villagersPerTribe);
 	}
 
 	public void generateMap() {
@@ -65,7 +65,14 @@ public class State implements Serializable{
 	
 	private void generateTribes(int tribesNum, int villagersPerTribe) {
 		for (int i = 0; i < tribesNum; i++) {
-			Point tribeLocation = terrainManager.getSpawnablePoint();
+			boolean validLocation = false;
+			Point tribeLocation = null;
+			while(!validLocation){
+				tribeLocation = terrainManager.getSpawnablePoint();
+				if (resourceManager.getReservoirAt(tribeLocation) == null){
+					validLocation = true;
+				}
+			}
 			Tribe tribe = new Tribe(tribeLocation);
 			tribeManager.addTribe(tribe);
 			for (int j = 0; j < villagersPerTribe; j++) {
