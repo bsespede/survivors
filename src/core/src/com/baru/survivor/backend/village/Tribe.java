@@ -14,7 +14,6 @@ import com.baru.survivor.backend.resources.ResourceType;
 public class Tribe implements Serializable{
 
 	private List<Agent> members = new ArrayList<Agent>();
-	private List<Agent> insideVillage = new ArrayList<Agent>();
 	private Bag villageFoodVault = new Bag(Survivor.villageSlots);
 	private Bag villageWaterVault = new Bag(Survivor.villageSlots);
 	private Point villageLocation;
@@ -33,20 +32,6 @@ public class Tribe implements Serializable{
 	
 	public void addMember(Agent agent) {
 		members.add(agent);
-	}
-	
-	public void leaveVillage(Agent agent){
-		if (insideVillage.contains(agent)) {
-			insideVillage.remove(agent);
-		}
-	}
-	
-	public void enterVillage(Agent agent){
-		insideVillage.add(agent);
-	}
-	
-	public boolean insideVillage(Agent agent) {
-		return insideVillage.contains(agent);
 	}
 
 	public Point position() {
@@ -67,5 +52,9 @@ public class Tribe implements Serializable{
 		}else{
 			return villageWaterVault.getResource();
 		}
+	}
+
+	public List<Agent> getAgents() {
+		return members;
 	}
 }

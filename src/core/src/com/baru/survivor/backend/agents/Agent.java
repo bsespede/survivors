@@ -347,4 +347,12 @@ public class Agent implements Serializable{
 		return removeUntil(origPoint, i-1, visited);
 	}
 
+	public int getPathLength() {
+		return path.size();
+	}
+
+	public Point getGoalPoint() {
+		return goal;
+	}
+
 }

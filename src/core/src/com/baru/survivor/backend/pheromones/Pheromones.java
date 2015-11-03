@@ -19,7 +19,7 @@ public class Pheromones implements Serializable{
 	
 	private final float minPheromones = 0.0001f;
 	private final float maxPheromones = 1f;
-	private final float stepPheromone = 0f;
+	private final float stepPheromone = 0.3f;
 	private final float pheromoneLoss = 0.03f;
 	private final float interestCoeff = 10f;
 	private final float pheromoneCoeff = 0.3f;
@@ -64,21 +64,24 @@ public class Pheromones implements Serializable{
 					double interest = (goal == null)? difference: difference/eulerDist(terrainManager, target, goal);
 					if ((Survivor.pathBlockingDisabled || agentManager.noAgentsAt(target) || target.equals(tribePosition)) && 
 							TerrainManager.isValidPoint(target) && !terrainManager.isBlocked(target)){
-						if (interest == Double.POSITIVE_INFINITY){
+						if (interest == Double.POSITIVE_INFINITY || Double.isNaN(interest)){
 							return dir;
 						}
 						double dirValue = Math.pow(pheromones[target.x][target.y], pheromoneCoeff) * Math.pow(interest, interestCoeff);
 						directionsValues.put(dir, dirValue);
 						totalValue += dirValue;
+						
 					}
 				}
 			}
 		}
+		
 		return throwDiceForDirection(directionsValues, totalValue);
 	}
 
 	private Direction throwDiceForDirection(
 			Map<Direction, Double> directionsValues, double totalValue) {
+		
 		Random rnd = new Random();
 		double diceValue = rnd.nextFloat() * totalValue;
 		double sum = 0;

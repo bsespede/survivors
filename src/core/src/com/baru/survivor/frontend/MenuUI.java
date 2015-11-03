@@ -53,12 +53,12 @@ public class MenuUI {
 	    lakesDur = new Label("Water repositories uses", skin);
 	    
 	    seedNameField = new TextField("Map", skin);
-	    tribesNumField = new TextField("2", skin);
-	    villagersPerTribeField = new TextField("2", skin);
-	    foodNumField = new TextField("5", skin);
-	    foodDurField = new TextField("10", skin);
-	    lakesNumField = new TextField("5", skin);
-	    lakesDurField = new TextField("10", skin);
+	    tribesNumField = new TextField("1", skin);
+	    villagersPerTribeField = new TextField("4", skin);
+	    foodNumField = new TextField("10", skin);
+	    foodDurField = new TextField("50", skin);
+	    lakesNumField = new TextField("10", skin);
+	    lakesDurField = new TextField("50", skin);
 	    
 	    files = new List(skin);
 	    
@@ -95,6 +95,7 @@ public class MenuUI {
 			       in.close();
 			       fileIn.close();
 			       loadedState.resetPheromones();
+			       loadedState.resetLog();
 			       Survivor.setState(loadedState);
 			    }catch(IOException i){
 			       i.printStackTrace();
@@ -143,6 +144,9 @@ public class MenuUI {
 		
 		File folder = new File("./maps/");
 		folder.mkdir();
+		File logs = new File("./logs/");
+		logs.mkdir();
+		
 	    String[] listOfFiles = folder.list();
 	    files.setItems(listOfFiles);
 	    

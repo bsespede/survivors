@@ -38,7 +38,8 @@ public class AgentManager implements Serializable{
 						}
 					}
 				}else{
-					if (agent.pickUp(reservoirManager)){
+					if (agent.getGoalState() == Status.GRAB_RESOURCE && agent.position().equals(agent.getGoalPoint())){
+						agent.pickUp(reservoirManager);
 						agent.setGoalPoint(tribePosition, Status.GO_HOME);
 						agent.cleanPath();
 					}else if (agent.position().equals(tribePosition)){
@@ -70,6 +71,7 @@ public class AgentManager implements Serializable{
 		Agent agent = new Agent(position);
 		agents.add(agent);
 		tribes.put(agent, tribe);
+		tribe.addMember(agent);
 	}
 	
 	public Agent getAgentAt(Point position) {

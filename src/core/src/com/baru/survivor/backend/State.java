@@ -6,6 +6,7 @@ import java.io.Serializable;
 import com.baru.survivor.Survivor;
 import com.baru.survivor.backend.agents.AgentManager;
 import com.baru.survivor.backend.agents.DayCycle;
+import com.baru.survivor.backend.log.Log;
 import com.baru.survivor.backend.map.TerrainGenerator;
 import com.baru.survivor.backend.map.TerrainManager;
 import com.baru.survivor.backend.pheromones.Pheromones;
@@ -23,6 +24,7 @@ public class State implements Serializable{
 	private int tickCounter = 0;
 	private long lastTick = System.currentTimeMillis();
 	private transient Pheromones pheromones = new Pheromones(Survivor.width, Survivor.height);
+	private transient Log log;
 
 	public void nextState(long curTime){
 		long elapsedTime = curTime - lastTick;
@@ -35,9 +37,14 @@ public class State implements Serializable{
 				}
 			}
 			agentManager.tickTime(terrainManager, resourceManager, cycle, pheromones);
+			log.tick(tribeManager, resourceManager);
 			lastTick = curTime;	
 			tickCounter++;
 		}
+	}
+	
+	public void resetLog(){
+		log = new Log(tribeManager);
 	}
 	
 	public void resetPheromones(){
@@ -49,8 +56,13 @@ public class State implements Serializable{
 		generateFood(foodNum, foodDur);
 		generateWater(lakeNum, lakeDur);
 		generateTribes(tribesNum, villagersPerTribe);
+		resetLog();
 	}
 
+	public Log getLog(){
+		return log;
+	}
+	
 	public void generateMap() {
 		terrainManager = TerrainGenerator.generateMap();
 	}
