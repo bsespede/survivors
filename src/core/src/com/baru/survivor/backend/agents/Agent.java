@@ -35,7 +35,7 @@ public class Agent implements Serializable{
 	
 	public Agent(Point position){
 		Random rand = new Random();
-		this.kindness = rand.nextFloat();
+		this.kindness = 1;//rand.nextFloat();
 		this.foodBag = new Bag(Survivor.agentSlots);
 		this.waterBag = new Bag(Survivor.agentSlots);
 		this.hunger = 1;
@@ -123,9 +123,15 @@ public class Agent implements Serializable{
 		float amountToReduce = 1.0f / (Survivor.secondsPerDay * (1000/Survivor.tickTime));
 		if (hunger > 0){
 			hunger -= amountToReduce;
+			if (hunger <= 0){
+				thirst = 0;
+			}
 		}
 		if (thirst > 0){
 			thirst -= amountToReduce;
+			if (thirst <= 0){
+				hunger = 0;
+			}
 		}
 	}
 

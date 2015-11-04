@@ -19,7 +19,7 @@ public class Pheromones implements Serializable{
 	
 	private final float minPheromones = 0.0001f;
 	private final float maxPheromones = 1f;
-	private final float stepPheromone = 0.3f;
+	private final float stepPheromone = 1f;
 	private final float pheromoneLoss = 0.03f;
 	private final float interestCoeff = 10f;
 	private final float pheromoneCoeff = 0.3f;
