@@ -23,7 +23,6 @@ public class Agent implements Serializable{
 	private Point position;
 	private Point lastPosition;
 	private List<Point> path;
-	private float pheromoneIntensity;
 	private float hunger;
 	private float thirst;
 	private int visionRange;
@@ -32,17 +31,17 @@ public class Agent implements Serializable{
 	private Bag waterBag;
 	private Point goal;
 	private Status goalState;
+	private float pathSize;
 	
 	public Agent(Point position){
 		Random rand = new Random();
-		this.kindness = 1;//rand.nextFloat();
+		this.kindness = rand.nextFloat();
 		this.foodBag = new Bag(Survivor.agentSlots);
 		this.waterBag = new Bag(Survivor.agentSlots);
 		this.hunger = 1;
 		this.path = new LinkedList<Point>();
 		this.path.add(position);
-		this.thirst = 1;	
-		this.pheromoneIntensity = 1;
+		this.thirst = 1;
 		this.visionRange = 2;
 		this.position = position;
 		NameGenerator ng;
@@ -120,7 +119,7 @@ public class Agent implements Serializable{
 	}
 
 	public void addHungerThirst() {
-		float amountToReduce = 1.0f / (Survivor.secondsPerDay * (1000/Survivor.tickTime));
+		float amountToReduce = 0.5f / (Survivor.secondsPerDay * (1000/Survivor.tickTime));
 		if (hunger > 0){
 			hunger -= amountToReduce;
 			if (hunger <= 0){
@@ -136,21 +135,23 @@ public class Agent implements Serializable{
 	}
 
 	public void move(TerrainManager terrainManager, AgentManager agentManager, Point tribePosition, Pheromones pheromones) {
-		if (goalState == Status.GO_HOME){
-			if (path.size() == 0){
-				System.out.println(this.name);
-			}else{
+		if (goalState == Status.NEST_NO_PHEROMONE || goalState == Status.NEST_PHEROMONE){
+			if (path.size() > 0){
 				Point newPosition = path.get(0);
-				if (Survivor.pathBlockingDisabled || agentManager.noAgentsAt(newPosition) || newPosition.equals(tribePosition)){
-					lastPosition = position;
-					position = new Point(newPosition);
-					if (!newPosition.equals(tribePosition)){
-						path.remove(0);
-					}else{
-						lastPosition = null;
-						pheromoneIntensity = 1;
-					}
+				lastPosition = position;
+				position = new Point(newPosition);
+				if (!newPosition.equals(tribePosition)){
+					path.remove(0);
+				}else{
+					path.clear();
+					lastPosition = null;
+					position = tribePosition;
+					path.add(0, tribePosition);
 				}
+			}else{
+				lastPosition = null;
+				position = tribePosition;
+				path.add(0, tribePosition);
 			}
 		}else{
 			Direction dir = pheromones.getDirFrom(agentManager, tribePosition, terrainManager, position, lastPosition, goal);
@@ -159,13 +160,8 @@ public class Agent implements Serializable{
 				lastPosition = position;
 				position = new Point(newPosition);
 				path.add(0, newPosition);
-				pheromoneIntensity *= 1f - Survivor.pheromoneLossPercentage;
 			}
 		}		
-	}
-	
-	public float getPheromoneIntensity(){
-		return pheromoneIntensity;		
 	}
 	
 	public boolean pickUp(ReservoirManager reservoirManager) {
@@ -287,14 +283,13 @@ public class Agent implements Serializable{
 	}
 
 	public float getPercentageToDeposit(){
-		return 1;
-		/*if (kindness > 0.8){
+		if (kindness > 0.6){
 			return 1;
-		}else if (kindness > 0.5){
+		}else if (kindness > 0.3){
 			return 0.5f;
-		}else {
+		}else{
 			return 0;
-		}*/
+		}
 	}
 	
 	public void pickUpFromTribeBag(Tribe tribe) {
@@ -316,9 +311,10 @@ public class Agent implements Serializable{
 		return visionRange;
 	}
 
-	public void setGoalPoint(Point goal, Status goalState) {
-		this.goal = goal;
-		this.goalState = goalState;
+	public void setGoalPoint(Point goalPoint, Status status) {
+		goal = goalPoint;
+		goalState = status;
+		pathSize = 1f/path.size();
 	}
 
 	public Status getGoalState() {
@@ -359,6 +355,49 @@ public class Agent implements Serializable{
 
 	public Point getGoalPoint() {
 		return goal;
+	}
+
+	public boolean stillNeedsFood(){
+		if (hunger < 0.5){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean stillNeedsWater(){
+		if (thirst < 0.5){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isDyingFromHunger() {
+		float amountToReduce = 1.0f / (Survivor.secondsPerDay * (1000/Survivor.tickTime));
+		if (hunger - path.size()*amountToReduce + foodBag.usedSlots()*amountToReduce <= 0){
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isDyingFromThirst() {
+		float amountToReduce = 1.0f / (Survivor.secondsPerDay * (1000/Survivor.tickTime));
+		if (thirst - path.size()*amountToReduce + waterBag.usedSlots()*amountToReduce <= 0){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isDying() {
+		return isDyingFromHunger() || isDyingFromHunger();
+	}
+
+	public float getPheromoneIntensity(Pheromones pheromones) {
+		if (Survivor.pheromoneDistanceLossOn){
+			System.out.println(pathSize);
+			return pathSize*15*kindness;
+		}else {
+			return pheromones.getPhereomoneConstant()*kindness;
+		}
 	}
 
 }

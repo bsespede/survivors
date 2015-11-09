@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.baru.survivor.backend.agents.Agent;
@@ -49,7 +50,9 @@ public class Log {
 				float curHunger = 0;
 				float curThirst = 0;
 				int curDead = 0;
-				for (Agent curAgent: curTribe.getAgents()){
+				List<Agent> tribeAgents = curTribe.getAgents();
+				int tribeSize = tribeAgents.size();
+				for (Agent curAgent: tribeAgents){
 					if(curAgent.isDead()){
 						curDead++;
 					}else{
@@ -63,13 +66,14 @@ public class Log {
 						}
 					}				
 				}
+				int curAlive = tribeSize - curDead;
 				tribeStatusFile.append(Integer.toString(curTick));
 				tribeStatusFile.append(',');				
-				tribeStatusFile.append(Float.toString(curHunger));
+				tribeStatusFile.append(Float.toString(curHunger/curAlive));
 				tribeStatusFile.append(',');
-				tribeStatusFile.append(Float.toString(curThirst));
+				tribeStatusFile.append(Float.toString(curThirst/curAlive));
 				tribeStatusFile.append(',');
-				tribeStatusFile.append(Float.toString(curDead));
+				tribeStatusFile.append(Integer.toString(curAlive));
 				tribeStatusFile.append('\n');
 			} catch (IOException e) {
 				e.printStackTrace();

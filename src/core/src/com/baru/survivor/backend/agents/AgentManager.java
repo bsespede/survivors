@@ -28,8 +28,8 @@ public class AgentManager implements Serializable{
 					if (agent.position().equals(tribePosition)){
 						agent.pickUpFromTribeBag(tribe);
 					}else{
-						if (agent.getGoalState() != Status.GO_HOME){
-							agent.setGoalPoint(tribePosition, Status.GO_HOME);
+						if (agent.getGoalState() != Status.NEST_NO_PHEROMONE){
+							agent.setGoalPoint(tribePosition, Status.NEST_NO_PHEROMONE);
 							agent.cleanPath();
 						}
 						agent.move(terrainManager, this, tribePosition, pheromones);
@@ -38,9 +38,19 @@ public class AgentManager implements Serializable{
 						}
 					}
 				}else{
-					if (agent.getGoalState() == Status.GRAB_RESOURCE && agent.position().equals(agent.getGoalPoint())){
+					if (agent.isDying()){
+						if (agent.position().equals(tribePosition)){
+							agent.pickUpFromTribeBag(tribe);
+							if (!tribe.hasNeededResource(agent)){
+								agent.setGoalPoint(null, Status.SEARCH_RESOURCE);
+							}
+						}else if (agent.getGoalState() != Status.NEST_NO_PHEROMONE){
+							agent.setGoalPoint(tribePosition, Status.NEST_NO_PHEROMONE);
+							agent.cleanPath();
+						}						
+					}else if (agent.getGoalState() == Status.GRAB_RESOURCE && agent.position().equals(agent.getGoalPoint())){
 						agent.pickUp(reservoirManager);
-						agent.setGoalPoint(tribePosition, Status.GO_HOME);
+						agent.setGoalPoint(tribePosition, Status.NEST_PHEROMONE);
 						agent.cleanPath();
 					}else if (agent.position().equals(tribePosition)){
 						agent.depositInTribeBag(tribe);
@@ -55,8 +65,10 @@ public class AgentManager implements Serializable{
 					agent.move(terrainManager, this, tribePosition, pheromones);
 				}
 				agent.consumeFromBags();
-				if (!agent.position().equals(tribePosition) && (!positionBeforeTurn.equals(agent.position()))){
-					pheromones.addPheromone(agent.position().x, agent.position().y, agent.getPheromoneIntensity());
+				if (agent.getGoalState() == Status.NEST_PHEROMONE && 
+						!agent.position().equals(tribePosition) &&
+						(!positionBeforeTurn.equals(agent.position()))){
+					pheromones.addPheromone(agent.position().x, agent.position().y, agent.getPheromoneIntensity(pheromones));
 				}
 			}
 		}

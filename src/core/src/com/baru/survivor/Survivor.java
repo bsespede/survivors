@@ -13,14 +13,14 @@ public class Survivor extends ApplicationAdapter {
 	public static final int height = 25;
 	public static final int tileSize = 32;
 	public static final int tickTime = 25;
-	public static final int secondsPerDay = 6;
+	public static final int secondsPerDay = 24;
 	public static final String spriteSheet = "spriteSheet-big.png";
 	public static final int dayTicks = (1000/Survivor.tickTime) * Survivor.secondsPerDay;
-	public static final float pheromoneLossPercentage = 0f;
+	public static final boolean pheromoneDistanceLossOn = true;
 	public static final boolean pathBlockingDisabled = true;
 	public static final boolean renderPheromones = true;
 	public static int agentSlots = 3;
-	public static int villageSlots = 1500;
+	public static int villageSlots = 50000;
 	
 	private static State state;
 	private Status status = Status.RUN;

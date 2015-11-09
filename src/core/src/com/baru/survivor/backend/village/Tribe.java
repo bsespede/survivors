@@ -57,4 +57,14 @@ public class Tribe implements Serializable{
 	public List<Agent> getAgents() {
 		return members;
 	}
+
+	public boolean hasNeededResource(Agent agent) {
+		if (agent.stillNeedsFood() && villageFoodVault.usedSlots() > 0){
+			return true;
+		}
+		if (agent.stillNeedsWater() && villageWaterVault.usedSlots() > 0){
+			return true;
+		}
+		return false;
+	}
 }

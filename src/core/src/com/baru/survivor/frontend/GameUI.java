@@ -20,6 +20,7 @@ import com.baru.survivor.backend.agents.Agent;
 import com.baru.survivor.backend.agents.DayCycle;
 import com.baru.survivor.backend.pheromones.Pheromones;
 import com.baru.survivor.backend.resources.Reservoir;
+import com.baru.survivor.backend.village.Tribe;
 import com.baru.survivor.frontend.canvas.Grid;
 import com.baru.survivor.frontend.canvas.PheromonePainter;
 
@@ -88,6 +89,11 @@ public class GameUI {
 						Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 			}
 		}
+		/*if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+			int x=Gdx.input.getX()/Survivor.tileSize;
+			int y=Gdx.input.getX()/Survivor.tileSize;
+			status.getTerrainManager().addMountain(x, y);
+		}*/
 		for (int x = 0; x < Survivor.width; x++) {
 			for (int y = 0; y < Survivor.height; y++) {
 				Point position = new Point(x, y);
@@ -102,7 +108,9 @@ public class GameUI {
 				}
 			}			
 		}
-		
+		for (Tribe curTribe: status.getTribeManager().getVillages()){
+			drawTribeResources(curTribe);
+		}
 		batch.end();
 	}
 
@@ -112,6 +120,16 @@ public class GameUI {
 		font.draw(batch, String.valueOf(usesLeft), x * Survivor.tileSize + 20,
 				Gdx.graphics.getHeight() - ((y+1) * Survivor.tileSize) + 10);
 		}
+	}
+	
+	private void drawTribeResources(Tribe tribe) {
+		Point tribePos = tribe.position();
+		int food = tribe.getFoodVault().usedSlots();
+		int water = tribe.getWaterVault().usedSlots();
+		font.draw(batch, String.valueOf(food) +" F", tribePos.x * Survivor.tileSize + 20,
+				Gdx.graphics.getHeight() - ((tribePos.y+1) * Survivor.tileSize));
+		font.draw(batch, String.valueOf(water)+" W", tribePos.x * Survivor.tileSize + 20,
+				Gdx.graphics.getHeight() - ((tribePos.y+1) * Survivor.tileSize) + 10);
 	}
 
 	private void drawAgentBars(Agent agent, int x, int y) {
